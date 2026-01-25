@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bupt.ibrain_glasses.glasses.mapper.OrganizationMapper">
+
+    <resultMap id="BaseResultMap" type="cn.bupt.ibrain_glasses.glasses.model.Organization">
+        <id property="organizationId" column="organization_id" jdbcType="CHAR"/>
+        <result property="organizationName" column="organization_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        organization_id, organization_name
+    </sql>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bupt.ibrain_glasses.glasses.mapper.TimeDataMapper">
+
+    <resultMap id="BaseResultMap" type="cn.bupt.ibrain_glasses.glasses.model.TimeData">
+        <id property="timeDataPK.subjectPhone" column="subject_phone" jdbcType="CHAR"/>
+        <id property="timeDataPK.glassesMac" column="glasses_mac" jdbcType="CHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="duration" column="duration" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        subject_phone, glasses_mac, username, start_time, duration
+    </sql>
+
+    <insert id="insertTimeData" parameterType="cn.bupt.ibrain_glasses.glasses.model.TimeData">
+        insert into time_data (subject_phone, glasses_mac, username, start_time, duration)
+        values (#{timeData.timeDataPK.subjectPhone}, #{timeData.timeDataPK.glassesMac},
+        #{timeData.username}, #{timeData.startTime}, #{timeData.duration})
+    </insert>
+</mapper>
