@@ -16,6 +16,15 @@ public class TimeData implements Serializable {
     @TableField("subject_phone")
     private String subjectPhone;
 
+    @TableField("subject_name")
+    private String subjectName;
+
+    @TableField("subject_gender")
+    private String subjectGender;
+
+    @TableField("subject_age")
+    private Integer subjectAge;
+
     @TableField("glasses_mac")
     private String glassesMac;
 

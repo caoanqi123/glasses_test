@@ -1,16 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Input, DatePicker, InputNumber, Popconfirm, Space, message } from 'antd';
+import {
+    Table,
+    Button,
+    Modal,
+    Input,
+    DatePicker,
+    InputNumber,
+    Popconfirm,
+    Space,
+    message,
+    Card,
+    Form,
+    Row,
+    Col,
+    Select,
+} from 'antd';
 import dayjs from 'dayjs';
 
 function TimeDataPage({ currentUser }) {
     const [timeDataList, setTimeDataList] = useState([]);   // 时间数据完整列表
     const [filterPhone, setFilterPhone] = useState('');     // 筛选：手机号
     const [filterMac, setFilterMac] = useState('');         // 筛选：MAC地址
-    const [filterStart, setFilterStart] = useState('');     // 筛选：开始时间字符串（含日期）
+    const [filterStart, setFilterStart] = useState('');     // 筛选：开始时间字符串（日期模糊）
+    const [filterStartDate, setFilterStartDate] = useState(null); // 筛选：开始时间选择器值
     const [editingRecord, setEditingRecord] = useState(null);  // 当前正在编辑的记录
     const [newAccount, setNewAccount] = useState('');          // 编辑表单：新的记录者账号
     const [newStartTime, setNewStartTime] = useState(null);    // 编辑表单：新的开始时间 (dayjs 对象)
     const [newDuration, setNewDuration] = useState(null);      // 编辑表单：新的持续时间 (秒)
+    const [newSubjectName, setNewSubjectName] = useState('');
+    const [newSubjectGender, setNewSubjectGender] = useState('');
+    const [newSubjectAge, setNewSubjectAge] = useState(null);
 
     // 初始化加载当前用户可查看的 timeData 列表
     useEffect(() => {
@@ -35,7 +54,7 @@ function TimeDataPage({ currentUser }) {
     const filteredList = timeDataList.filter(item => {
         const phoneMatch = item.timeDataPK.subjectPhone.includes(filterPhone);
         const macMatch = item.timeDataPK.glassesMac.includes(filterMac);
-        const startStr = item.startTime ? String(item.startTime) : '';
+        const startStr = item.startTime ? String(item.startTime).replace('T', ' ') : '';
         const startMatch = startStr.includes(filterStart);
         return phoneMatch && macMatch && startMatch;
     });
@@ -44,9 +63,12 @@ function TimeDataPage({ currentUser }) {
     const startEdit = (record) => {
         setEditingRecord(record);
         setNewAccount(record.username);
+        setNewSubjectName(record.subjectName || '');
+        setNewSubjectGender(record.subjectGender || '');
+        setNewSubjectAge(record.subjectAge ?? null);
         // 将开始时间字符串转换为 dayjs 对象作为初始值
         if (record.startTime) {
-            setNewStartTime(dayjs(record.startTime));
+            setNewStartTime(dayjs(String(record.startTime).replace('T', ' ')));
         } else {
             setNewStartTime(null);
         }
@@ -59,6 +81,9 @@ function TimeDataPage({ currentUser }) {
         setNewAccount('');
         setNewStartTime(null);
         setNewDuration(null);
+        setNewSubjectName('');
+        setNewSubjectGender('');
+        setNewSubjectAge(null);
     };
 
     // 提交修改
@@ -68,15 +93,34 @@ function TimeDataPage({ currentUser }) {
             message.error("账号必须为11位数字");
             return;
         }
-        if (newDuration === null || newDuration === undefined || newDuration < 0) {
-            message.error("持续时间必须是非负整数");
+        if (!newSubjectName.trim()) {
+            message.error("被试姓名不能为空");
+            return;
+        }
+        if (newSubjectGender !== '男' && newSubjectGender !== '女') {
+            message.error("被试性别必须为男或女");
+            return;
+        }
+        if (!Number.isInteger(newSubjectAge) || newSubjectAge <= 0) {
+            message.error("被试年龄必须为正整数");
+            return;
+        }
+        if (!Number.isInteger(newDuration) || newDuration <= 0) {
+            message.error("持续时间必须是正整数");
+            return;
+        }
+        if (!newStartTime) {
+            message.error("请选择开始时间");
             return;
         }
         // 准备请求体数据
         const payload = {
             username: newAccount,
-            startTime: newStartTime ? newStartTime.format("YYYY-MM-DD'T'HH:mm:ss") : null,
+            startTime: newStartTime.format("YYYY-MM-DDTHH:mm:ss"),
             duration: newDuration,
+            subjectName: newSubjectName.trim(),
+            subjectGender: newSubjectGender,
+            subjectAge: newSubjectAge,
         };
         const { subjectPhone, glassesMac } = editingRecord.timeDataPK;
         try {
@@ -95,8 +139,11 @@ function TimeDataPage({ currentUser }) {
                         return {
                             ...item,
                             username: newAccount,
-                            startTime: newStartTime ? newStartTime.format("YYYY-MM-DDTHH:mm:ss") : item.startTime,
+                            startTime: newStartTime.format("YYYY-MM-DDTHH:mm:ss"),
                             duration: newDuration,
+                            subjectName: newSubjectName.trim(),
+                            subjectGender: newSubjectGender,
+                            subjectAge: newSubjectAge,
                         };
                     }
                     return item;
@@ -134,110 +181,179 @@ function TimeDataPage({ currentUser }) {
 
     // 表格列定义
     const columns = [
-        { title: '受试者手机', dataIndex: ['timeDataPK', 'subjectPhone'], key: 'subjectPhone' },
-        { title: '眼镜MAC', dataIndex: ['timeDataPK', 'glassesMac'], key: 'glassesMac' },
-        { title: '记录者账号', dataIndex: 'username', key: 'username' },
-        { title: '开始时间', dataIndex: 'startTime', key: 'startTime' },
-        { title: '持续(秒)', dataIndex: 'duration', key: 'duration' },
-        { title: '操作', key: 'actions',
+        { title: '姓名', dataIndex: 'subjectName', key: 'subjectName', width: 100, align: 'center', ellipsis: true },
+        { title: '性别', dataIndex: 'subjectGender', key: 'subjectGender', width: 80, align: 'center' },
+        { title: '年龄', dataIndex: 'subjectAge', key: 'subjectAge', width: 80, align: 'center' },
+        { title: '被试手机号', dataIndex: ['timeDataPK', 'subjectPhone'], key: 'subjectPhone', width: 130, align: 'center' },
+        { title: 'MAC', dataIndex: ['timeDataPK', 'glassesMac'], key: 'glassesMac', width: 160, align: 'center', ellipsis: true },
+        {
+            title: '开始时间',
+            dataIndex: 'startTime',
+            key: 'startTime',
+            width: 180,
+            align: 'center',
+            render: (value) => (value ? String(value).replace('T', ' ') : ''),
+        },
+        { title: '持续时间(秒)', dataIndex: 'duration', key: 'duration', width: 120, align: 'center' },
+        { title: '关联账号', dataIndex: 'username', key: 'username', width: 140, align: 'center' },
+        {
+            title: '操作',
+            key: 'actions',
+            width: 120,
+            align: 'center',
             render: (_, record) => (
-                <>
-                    <Button size="small" onClick={() => startEdit(record)}>修改</Button>
+                <Space className="action-buttons">
+                    <Button type="link" size="small" onClick={() => startEdit(record)}>
+                        修改
+                    </Button>
                     <Popconfirm
                         title="确认删除该记录？"
                         onConfirm={() => deleteRecord(record)}
-                        okText="确认" cancelText="取消"
+                        okText="确认"
+                        cancelText="取消"
                     >
-                        <Button size="small" danger style={{ marginLeft: 8 }}>删除</Button>
+                        <Button type="link" size="small" danger>
+                            删除
+                        </Button>
                     </Popconfirm>
-                </>
-            )
+                </Space>
+            ),
         },
     ];
 
     return (
-        <div className="time-data-page">
-            <h2>时间数据</h2>
-            {/* 筛选输入框 */}
-            <Space style={{ marginBottom: 16 }}>
-                <Input
-                    placeholder="筛选手机号"
-                    value={filterPhone}
-                    onChange={e => setFilterPhone(e.target.value)}
-                    allowClear
+        <div className="time-data-page page-container">
+            <Card className="filter-card" bordered={false}>
+                <Form layout="inline" className="filter-form">
+                    <Row gutter={[16, 12]} style={{ width: '100%' }}>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="被试手机号">
+                                <Input
+                                    placeholder="请输入被试手机号"
+                                    value={filterPhone}
+                                    onChange={e => setFilterPhone(e.target.value)}
+                                    allowClear
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="MAC">
+                                <Input
+                                    placeholder="请输入 MAC"
+                                    value={filterMac}
+                                    onChange={e => setFilterMac(e.target.value)}
+                                    allowClear
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="开始时间">
+                                <DatePicker
+                                    placeholder="请选择开始日期"
+                                    value={filterStartDate}
+                                    format="YYYY-MM-DD"
+                                    allowClear
+                                    style={{ width: '100%' }}
+                                    onChange={(value) => {
+                                        if (value) {
+                                            const str = value.format("YYYY-MM-DD");
+                                            setFilterStart(str);
+                                            setFilterStartDate(value);
+                                        } else {
+                                            setFilterStart('');
+                                            setFilterStartDate(null);
+                                        }
+                                    }}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Card>
+            <Card className="table-card" bordered={false}>
+                <Table
+                    className="data-table"
+                    columns={columns}
+                    dataSource={filteredList}
+                    rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}`}
+                    tableLayout="fixed"
+                    scroll={{ x: 1200 }}
+                    pagination={{ pageSize: 8, showSizeChanger: false }}
                 />
-                <Input
-                    placeholder="筛选眼镜MAC"
-                    value={filterMac}
-                    onChange={e => setFilterMac(e.target.value)}
-                    allowClear
-                />
-                <DatePicker
-                    showTime={{ format: 'HH:mm' }}
-                    placeholder="筛选开始时间"
-                    value={filterStart ? dayjs(filterStart) : null}
-                    format="YYYY-MM-DD HH:mm"
-                    allowClear
-                    onChange={(value, dateString) => {
-                        if (value) {
-                            // 转换为包含'T'的格式子串用于匹配
-                            const str = value.format("YYYY-MM-DD'T'HH:mm");
-                            setFilterStart(str);
-                        } else {
-                            setFilterStart('');
-                        }
-                    }}
-                />
-            </Space>
-            {/* 数据列表表格 */}
-            <Table
-                className="data-table"
-                columns={columns}
-                dataSource={filteredList}
-                rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}`}
-                pagination={{ pageSize: 8 }}
-            />
+            </Card>
             {/* 编辑记录弹窗 */}
             {editingRecord && (
                 <Modal
-                    title="修改记录"
-                    visible={!!editingRecord}
+                    title={null}
+                    open={!!editingRecord}
                     onOk={submitEdit}
                     onCancel={cancelEdit}
                     okText="提交"
                     cancelText="取消"
                 >
-                    <p>
-                        <b>受试者:</b> {editingRecord.timeDataPK.subjectPhone}&nbsp;&nbsp;
-                        <b>眼镜MAC:</b> {editingRecord.timeDataPK.glassesMac}
-                    </p>
-                    <div style={{ marginBottom: 8 }}>
-                        <b>记录者账号:</b>{' '}
-                        <Input
-                            value={newAccount}
-                            onChange={e => setNewAccount(e.target.value)}
-                            placeholder="11位账号"
-                            maxLength={11}
-                        />
-                    </div>
-                    <div style={{ marginBottom: 8 }}>
-                        <b>开始时间:</b>{' '}
-                        <DatePicker
-                            showTime
-                            value={newStartTime}
-                            onChange={(val) => setNewStartTime(val)}
-                            format="YYYY-MM-DD HH:mm:ss"
-                        />
-                    </div>
-                    <div>
-                        <b>持续时间(秒):</b>{' '}
-                        <InputNumber
-                            value={newDuration}
-                            min={0}
-                            step={1}
-                            onChange={(value) => setNewDuration(value)}
-                        />
-                    </div>
+                    <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                        <Form.Item label="被试手机号">
+                            <Input value={editingRecord.timeDataPK.subjectPhone} disabled />
+                        </Form.Item>
+                        <Form.Item label="MAC">
+                            <Input value={editingRecord.timeDataPK.glassesMac} disabled />
+                        </Form.Item>
+                        <Form.Item label="被试姓名">
+                            <Input
+                                value={newSubjectName}
+                                onChange={e => setNewSubjectName(e.target.value)}
+                                placeholder="请输入被试姓名"
+                                maxLength={50}
+                            />
+                        </Form.Item>
+                        <Form.Item label="被试性别">
+                            <Select
+                                value={newSubjectGender}
+                                onChange={value => setNewSubjectGender(value)}
+                                placeholder="请选择性别"
+                            >
+                                <Select.Option value="男">男</Select.Option>
+                                <Select.Option value="女">女</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label="被试年龄">
+                            <InputNumber
+                                value={newSubjectAge}
+                                min={1}
+                                step={1}
+                                precision={0}
+                                onChange={(value) => setNewSubjectAge(value)}
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
+                        <Form.Item label="关联账号">
+                            <Input
+                                value={newAccount}
+                                onChange={e => setNewAccount(e.target.value)}
+                                placeholder="11位账号"
+                                maxLength={11}
+                            />
+                        </Form.Item>
+                        <Form.Item label="开始时间">
+                            <DatePicker
+                                showTime={{ format: 'HH:mm:ss' }}
+                                value={newStartTime}
+                                onChange={(val) => setNewStartTime(val)}
+                                format="YYYY-MM-DD HH:mm:ss"
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
+                        <Form.Item label="持续时间(秒)">
+                            <InputNumber
+                                value={newDuration}
+                                min={1}
+                                step={1}
+                                precision={0}
+                                onChange={(value) => setNewDuration(value)}
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
+                    </Form>
                 </Modal>
             )}
         </div>

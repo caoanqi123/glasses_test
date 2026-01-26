@@ -33,6 +33,48 @@ public class TimeDataController {
     }
 
     /**
+     * 批量上传 TimeData
+     */
+    @PostMapping("/batch")
+    public ResponseEntity<ApiResponse> uploadTimeData(@RequestBody List<TimeData> timeDataList) {
+        if (timeDataList == null || timeDataList.isEmpty()) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "上传数据不能为空");
+        }
+        List<TimeData> validRecords = new ArrayList<>();
+        List<TimeData> invalidRecords = new ArrayList<>();
+        for (TimeData record : timeDataList) {
+            if (record == null
+                    || record.getSubjectPhone() == null
+                    || !record.getSubjectPhone().matches("\\d{11}")
+                    || record.getGlassesMac() == null
+                    || record.getGlassesMac().trim().isEmpty()
+                    || record.getUsername() == null
+                    || !record.getUsername().matches("\\d{11}")
+                    || record.getStartTime() == null
+                    || record.getDuration() == null
+                    || record.getDuration() <= 0
+                    || record.getSubjectName() == null
+                    || record.getSubjectName().trim().isEmpty()
+                    || record.getSubjectGender() == null
+                    || !isValidGender(record.getSubjectGender())
+                    || record.getSubjectAge() == null
+                    || record.getSubjectAge() <= 0) {
+                invalidRecords.add(record);
+            } else {
+                validRecords.add(record);
+            }
+        }
+        if (!validRecords.isEmpty()) {
+            timeDataService.saveBatch(validRecords);
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("successCount", validRecords.size());
+        result.put("failedCount", invalidRecords.size());
+        result.put("failedRecords", invalidRecords);
+        return ApiResponse.createResponse(HttpStatus.OK.value(), "上传完成", result);
+    }
+
+    /**
      * 获取当前用户有权限查看的 TimeData 列表
      */
     @GetMapping
@@ -98,14 +140,14 @@ public class TimeDataController {
         if (dto.getUsername() != null) {
             User user = userService.getById(dto.getUsername());
             if (user == null) {
-                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "指定的账号不存在");
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "账号不存在");
             }
             record.setUsername(dto.getUsername());
         }
         // 如提供新的持续时间，则校验非负整数并更新
         if (dto.getDuration() != null) {
-            if (dto.getDuration() < 0) {
-                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "持续时间不能为负数");
+            if (dto.getDuration() <= 0) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "持续时间必须为正整数");
             }
             record.setDuration(dto.getDuration());
         }
@@ -127,6 +169,24 @@ public class TimeDataController {
                 return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "开始时间格式不正确");
             }
             record.setStartTime(newStart);
+        }
+        if (dto.getSubjectName() != null) {
+            if (dto.getSubjectName().trim().isEmpty()) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "被试姓名不能为空");
+            }
+            record.setSubjectName(dto.getSubjectName().trim());
+        }
+        if (dto.getSubjectGender() != null) {
+            if (!isValidGender(dto.getSubjectGender())) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "被试性别必须为男或女");
+            }
+            record.setSubjectGender(dto.getSubjectGender());
+        }
+        if (dto.getSubjectAge() != null) {
+            if (dto.getSubjectAge() <= 0) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "被试年龄必须为正整数");
+            }
+            record.setSubjectAge(dto.getSubjectAge());
         }
         // 执行更新
         timeDataService.update(record, query);
@@ -174,11 +234,24 @@ public class TimeDataController {
         private String username;
         private String startTime;
         private Integer duration;
+        private String subjectName;
+        private String subjectGender;
+        private Integer subjectAge;
         public String getUsername() { return username; }
         public void setUsername(String u) { this.username = u; }
         public String getStartTime() { return startTime; }
         public void setStartTime(String s) { this.startTime = s; }
         public Integer getDuration() { return duration; }
         public void setDuration(Integer d) { this.duration = d; }
+        public String getSubjectName() { return subjectName; }
+        public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
+        public String getSubjectGender() { return subjectGender; }
+        public void setSubjectGender(String subjectGender) { this.subjectGender = subjectGender; }
+        public Integer getSubjectAge() { return subjectAge; }
+        public void setSubjectAge(Integer subjectAge) { this.subjectAge = subjectAge; }
+    }
+
+    private boolean isValidGender(String gender) {
+        return "男".equals(gender) || "女".equals(gender);
     }
 }

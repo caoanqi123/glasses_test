@@ -4,6 +4,9 @@
 
     <resultMap id="BaseResultMap" type="cn.bupt.ibrain_glasses.glasses.model.TimeData">
         <id property="subjectPhone" column="subject_phone" jdbcType="CHAR"/>
+        <result property="subjectName" column="subject_name" jdbcType="VARCHAR"/>
+        <result property="subjectGender" column="subject_gender" jdbcType="VARCHAR"/>
+        <result property="subjectAge" column="subject_age" jdbcType="INTEGER"/>
         <id property="glassesMac" column="glasses_mac" jdbcType="CHAR"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
@@ -11,12 +14,15 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        subject_phone, glasses_mac, username, start_time, duration
+        subject_phone, subject_name, subject_gender, subject_age, glasses_mac, username, start_time, duration
     </sql>
 
     <insert id="insertTimeData" parameterType="cn.bupt.ibrain_glasses.glasses.model.TimeData">
-        insert into time_data (subject_phone, glasses_mac, username, start_time, duration)
-        values (#{timeData.subjectPhone}, #{timeData.glassesMac},
-                #{timeData.username}, #{timeData.startTime}, #{timeData.duration})
+        insert into time_data (subject_phone, subject_name, subject_gender, subject_age,
+                               glasses_mac, username, start_time, duration)
+        values (#{timeData.subjectPhone}, #{timeData.subjectName},
+                #{timeData.subjectGender}, #{timeData.subjectAge},
+                #{timeData.glassesMac}, #{timeData.username},
+                #{timeData.startTime}, #{timeData.duration})
     </insert>
 </mapper>

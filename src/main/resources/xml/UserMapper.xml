@@ -8,9 +8,10 @@
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="authorityType" column="authority_type" jdbcType="VARCHAR"/>
         <result property="organizationId" column="organization_id" jdbcType="CHAR"/>
+        <result property="firstLogin" column="first_login" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        username, password, name, authority_type, organization_id
+        username, password, name, authority_type, organization_id, first_login
     </sql>
 </mapper>
