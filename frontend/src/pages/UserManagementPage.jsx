@@ -8,6 +8,11 @@ function UserManagementPage({ currentUser }) {
     const [newAuthority, setNewAuthority] = useState('');   // 编辑表单中选定的新权限
     const [newOrgId, setNewOrgId] = useState('');           // 编辑表单中选定的新组织ID
     const [newName, setNewName] = useState('');             // 编辑表单中姓名
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [createUsername, setCreateUsername] = useState('');
+    const [createName, setCreateName] = useState('');
+    const [createAuthority, setCreateAuthority] = useState('');
+    const [createOrgId, setCreateOrgId] = useState('');
 
     // 组件加载时获取用户列表和组织列表
     useEffect(() => {
@@ -142,6 +147,9 @@ function UserManagementPage({ currentUser }) {
     };
 
     const canManageTarget = (target) => {
+        if (target.username === currentUser.username) {
+            return true;
+        }
         if (currentUser.authorityType === '超管') {
             return true;
         }
@@ -151,7 +159,77 @@ function UserManagementPage({ currentUser }) {
         if (currentUser.authorityType === '组织') {
             return target.authorityType === '个人';
         }
-        return target.username === currentUser.username;
+        return false;
+    };
+
+    const availableOrgs = currentUser.authorityType === '组织'
+        ? orgOptions.filter(org => org.organizationId === currentUser.organizationId)
+        : orgOptions;
+
+    const openCreateUser = () => {
+        setIsCreateOpen(true);
+        setCreateAuthority('');
+        setCreateOrgId(currentUser.authorityType === '组织' ? currentUser.organizationId : '');
+    };
+
+    const cancelCreateUser = () => {
+        setIsCreateOpen(false);
+        setCreateUsername('');
+        setCreateName('');
+        setCreateAuthority('');
+        setCreateOrgId('');
+    };
+
+    const submitCreateUser = async () => {
+        if (!/^\d{11}$/.test(createUsername)) {
+            message.error("账号必须为11位数字");
+            return;
+        }
+        if (!createName.trim()) {
+            message.error("姓名不能为空");
+            return;
+        }
+        if (!createAuthority) {
+            message.error("请选择权限类型");
+            return;
+        }
+        if ((createAuthority === '个人' || createAuthority === '组织') && !createOrgId) {
+            message.error("个人/组织用户必须选择所属组织");
+            return;
+        }
+        try {
+            const res = await fetch(`/users?currentUsername=${currentUser.username}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: createUsername,
+                    name: createName,
+                    authorityType: createAuthority,
+                    organizationId: createOrgId || null,
+                }),
+            });
+            const data = await res.json();
+            if (!data.success) {
+                message.error(data.message || "新增失败");
+            } else {
+                const orgName = orgOptions.find(org => org.organizationId === createOrgId)?.organizationName || '';
+                setUserList(prev => ([
+                    ...prev,
+                    {
+                        username: createUsername,
+                        name: createName,
+                        authorityType: createAuthority,
+                        organizationId: createOrgId || null,
+                        organizationName: orgName,
+                    },
+                ]));
+                message.success("用户已新增");
+                cancelCreateUser();
+            }
+        } catch (err) {
+            console.error("Create user failed:", err);
+            message.error("新增请求失败");
+        }
     };
 
     // 定义表格列
@@ -169,7 +247,7 @@ function UserManagementPage({ currentUser }) {
                         onClick={() => startEditUser(record)}
                         disabled={!canManageTarget(record)}
                     >
-                        编辑
+                        修改
                     </Button>
                     <Popconfirm
                         title={`确认删除用户 ${record.username} 吗？`}
@@ -197,6 +275,13 @@ function UserManagementPage({ currentUser }) {
                     <div className="page-title">用户管理</div>
                 </div>
             </div>
+            {currentUser.authorityType !== '个人' && (
+                <div style={{ marginBottom: 12 }}>
+                    <Button type="primary" onClick={openCreateUser}>
+                        新增用户
+                    </Button>
+                </div>
+            )}
             {/* 用户列表表格 */}
             <Card className="table-card" bordered={false}>
                 <Table
@@ -210,14 +295,14 @@ function UserManagementPage({ currentUser }) {
             {/* 编辑用户弹窗 */}
             {editingUser && (
                 <Modal
-                    title={`编辑用户: ${editingUser.username}`}
+                    title={null}
                     open={!!editingUser}
                     onOk={submitUserEdit}
                     onCancel={cancelEditUser}
                     okText="保存"
                     cancelText="取消"
                 >
-                    <Form layout="vertical">
+                    <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
                         <Form.Item label="账号">
                             <Input value={editingUser.username} disabled />
                         </Form.Item>
@@ -247,7 +332,7 @@ function UserManagementPage({ currentUser }) {
                                 placeholder="--选择组织--"
                                 allowClear
                             >
-                                {orgOptions.map(org => (
+                                {availableOrgs.map(org => (
                                     <Select.Option key={org.organizationId} value={org.organizationId}>
                                         {org.organizationName}
                                     </Select.Option>
@@ -257,6 +342,64 @@ function UserManagementPage({ currentUser }) {
                     </Form>
                 </Modal>
             )}
+            <Modal
+                title="新增用户"
+                open={isCreateOpen}
+                onOk={submitCreateUser}
+                onCancel={cancelCreateUser}
+                okText="提交"
+                cancelText="取消"
+            >
+                <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                    <Form.Item label="手机号">
+                        <Input
+                            value={createUsername}
+                            onChange={(e) => setCreateUsername(e.target.value)}
+                            placeholder="11位手机号"
+                            maxLength={11}
+                        />
+                    </Form.Item>
+                    <Form.Item label="姓名">
+                        <Input
+                            value={createName}
+                            onChange={(e) => setCreateName(e.target.value)}
+                            placeholder="请输入姓名"
+                        />
+                    </Form.Item>
+                    <Form.Item label="权限">
+                        <Select
+                            value={createAuthority}
+                            onChange={(val) => {
+                                setCreateAuthority(val);
+                                if (currentUser.authorityType === '组织') {
+                                    setCreateOrgId(currentUser.organizationId || '');
+                                }
+                            }}
+                        >
+                            {getAuthorityOptions().map(option => (
+                                <Select.Option key={option} value={option}>
+                                    {option}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="组织">
+                        <Select
+                            value={createOrgId}
+                            onChange={val => setCreateOrgId(val)}
+                            placeholder="--选择组织--"
+                            allowClear
+                            disabled={currentUser.authorityType === '组织'}
+                        >
+                            {availableOrgs.map(org => (
+                                <Select.Option key={org.organizationId} value={org.organizationId}>
+                                    {org.organizationName}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 }

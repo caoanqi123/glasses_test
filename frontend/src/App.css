@@ -132,6 +132,11 @@
   color: #1f2937;
 }
 
+.data-table .ant-table-thead > tr > th,
+.data-table .ant-table-tbody > tr > td {
+  text-align: center;
+}
+
 .action-buttons .ant-btn {
   padding: 0;
 }

@@ -106,6 +106,74 @@ public class UserController {
     }
 
     /**
+     * 新增用户（管理员/超管/组织）
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse> createUser(@RequestParam String currentUsername,
+                                                  @RequestBody CreateUserDto dto) {
+        User currentUser = userService.getById(currentUsername);
+        if (currentUser == null) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+        }
+        String currentAuth = currentUser.getAuthorityType();
+        if ("个人".equals(currentAuth)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+        }
+        if (dto.getUsername() == null || !dto.getUsername().matches("\\d{11}")) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "账号必须为11位数字");
+        }
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "姓名不能为空");
+        }
+        if (dto.getAuthorityType() == null || dto.getAuthorityType().trim().isEmpty()) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "权限类型不能为空");
+        }
+        String newAuth = dto.getAuthorityType();
+        List<String> allowedAuth;
+        if ("超管".equals(currentAuth)) {
+            allowedAuth = Arrays.asList("个人", "组织", "管理员", "超管");
+        } else if ("管理员".equals(currentAuth)) {
+            allowedAuth = Arrays.asList("个人", "组织", "管理员");
+        } else {
+            allowedAuth = Arrays.asList("个人", "组织");
+        }
+        if (!allowedAuth.contains(newAuth)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限设置该权限");
+        }
+        if (userService.getById(dto.getUsername()) != null) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "该账号已存在");
+        }
+        String orgId = dto.getOrganizationId();
+        if ("个人".equals(newAuth) || "组织".equals(newAuth)) {
+            if (orgId == null || orgId.trim().isEmpty()) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "个人/组织用户必须指定所属组织");
+            }
+            if ("组织".equals(currentAuth) && !Objects.equals(currentUser.getOrganizationId(), orgId)) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "只能选择本组织");
+            }
+            Organization org = organizationService.getById(orgId);
+            if (org == null) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "组织ID不存在");
+            }
+        } else {
+            if ("组织".equals(currentAuth)) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限设置该权限");
+            }
+            orgId = null;
+        }
+        String defaultPassword = "12345678";
+        String encodedPwd = encoder.encode(defaultPassword);
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setName(dto.getName().trim());
+        user.setAuthorityType(newAuth);
+        user.setOrganizationId(orgId);
+        user.setPassword(encodedPwd);
+        userService.save(user);
+        return ApiResponse.createResponse(HttpStatus.OK.value(), "用户创建成功");
+    }
+
+    /**
      * 获取用户列表，根据当前登录用户权限筛选
      */
     @GetMapping
@@ -165,20 +233,21 @@ public class UserController {
         }
         String currentAuth = currentUser.getAuthorityType();
         String targetAuth = target.getAuthorityType();
-        if ("个人".equals(currentAuth)) {
-            if (!Objects.equals(currentUser.getUsername(), target.getUsername())) {
+        boolean isSelf = Objects.equals(currentUser.getUsername(), target.getUsername());
+        if (!isSelf) {
+            if ("个人".equals(currentAuth)) {
                 return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
-            }
-        } else if ("组织".equals(currentAuth)) {
-            if (!Objects.equals(currentUser.getOrganizationId(), target.getOrganizationId())) {
-                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改非本组织的用户");
-            }
-            if (!"个人".equals(targetAuth)) {
-                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改该用户权限");
-            }
-        } else if ("管理员".equals(currentAuth)) {
-            if ("管理员".equals(targetAuth) || "超管".equals(targetAuth)) {
-                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改该用户权限");
+            } else if ("组织".equals(currentAuth)) {
+                if (!Objects.equals(currentUser.getOrganizationId(), target.getOrganizationId())) {
+                    return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改非本组织的用户");
+                }
+                if (!"个人".equals(targetAuth)) {
+                    return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改该用户权限");
+                }
+            } else if ("管理员".equals(currentAuth)) {
+                if ("管理员".equals(targetAuth) || "超管".equals(targetAuth)) {
+                    return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改该用户权限");
+                }
             }
         }
         // 验证新的权限类型是否合法，如为空则保留原值
@@ -194,7 +263,7 @@ public class UserController {
         if ("个人".equals(currentAuth) && !"个人".equals(newAuth)) {
             return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能提升权限");
         }
-        if ("组织".equals(currentAuth) && !"个人".equals(newAuth)) {
+        if ("组织".equals(currentAuth) && !("个人".equals(newAuth) || "组织".equals(newAuth))) {
             return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能提升权限");
         }
         if ("管理员".equals(currentAuth) && "超管".equals(newAuth)) {
@@ -247,20 +316,21 @@ public class UserController {
         }
         String currentAuth = currentUser.getAuthorityType();
         String targetAuth = target.getAuthorityType();
-        if ("个人".equals(currentAuth)) {
-            if (!Objects.equals(currentUser.getUsername(), target.getUsername())) {
+        boolean isSelf = Objects.equals(currentUser.getUsername(), target.getUsername());
+        if (!isSelf) {
+            if ("个人".equals(currentAuth)) {
                 return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
-            }
-        } else if ("组织".equals(currentAuth)) {
-            if (!Objects.equals(currentUser.getOrganizationId(), target.getOrganizationId())) {
-                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除非本组织的用户");
-            }
-            if (!"个人".equals(targetAuth)) {
-                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除该用户权限");
-            }
-        } else if ("管理员".equals(currentAuth)) {
-            if ("管理员".equals(targetAuth) || "超管".equals(targetAuth)) {
-                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除该用户权限");
+            } else if ("组织".equals(currentAuth)) {
+                if (!Objects.equals(currentUser.getOrganizationId(), target.getOrganizationId())) {
+                    return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除非本组织的用户");
+                }
+                if (!"个人".equals(targetAuth)) {
+                    return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除该用户权限");
+                }
+            } else if ("管理员".equals(currentAuth)) {
+                if ("管理员".equals(targetAuth) || "超管".equals(targetAuth)) {
+                    return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除该用户权限");
+                }
             }
         }
         userService.removeById(username);
@@ -293,5 +363,20 @@ public class UserController {
         public void setOrganizationId(String o) { this.organizationId = o; }
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
+    }
+
+    static class CreateUserDto {
+        private String username;
+        private String name;
+        private String authorityType;
+        private String organizationId;
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public String getAuthorityType() { return authorityType; }
+        public void setAuthorityType(String authorityType) { this.authorityType = authorityType; }
+        public String getOrganizationId() { return organizationId; }
+        public void setOrganizationId(String organizationId) { this.organizationId = organizationId; }
     }
 }

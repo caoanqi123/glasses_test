@@ -195,12 +195,12 @@ function TimeDataPage({ currentUser }) {
                 </div>
             </div>
             <Card className="filter-card" bordered={false}>
-                <Form layout="vertical" className="filter-form">
-                    <Row gutter={[16, 12]}>
+                <Form layout="inline" className="filter-form">
+                    <Row gutter={[16, 12]} style={{ width: '100%' }}>
                         <Col xs={24} md={8}>
-                            <Form.Item label="受试者手机号">
+                            <Form.Item label="被试手机号">
                                 <Input
-                                    placeholder="请输入受试者手机号"
+                                    placeholder="请输入被试手机号"
                                     value={filterPhone}
                                     onChange={e => setFilterPhone(e.target.value)}
                                     allowClear
@@ -208,9 +208,9 @@ function TimeDataPage({ currentUser }) {
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={8}>
-                            <Form.Item label="眼镜 MAC">
+                            <Form.Item label="MAC">
                                 <Input
-                                    placeholder="请输入眼镜 MAC"
+                                    placeholder="请输入 MAC"
                                     value={filterMac}
                                     onChange={e => setFilterMac(e.target.value)}
                                     allowClear
@@ -253,14 +253,14 @@ function TimeDataPage({ currentUser }) {
             {/* 编辑记录弹窗 */}
             {editingRecord && (
                 <Modal
-                    title="修改记录"
+                    title={null}
                     open={!!editingRecord}
                     onOk={submitEdit}
                     onCancel={cancelEdit}
                     okText="提交"
                     cancelText="取消"
                 >
-                    <Form layout="vertical">
+                    <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
                         <Form.Item label="被试手机号">
                             <Input value={editingRecord.timeDataPK.subjectPhone} disabled />
                         </Form.Item>
