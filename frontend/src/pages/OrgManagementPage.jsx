@@ -177,11 +177,13 @@ function OrgManagementPage({ currentUser }) {
 
     return (
         <div className="org-management-page page-container">
-            <div style={{ marginBottom: 12 }}>
-                <Button type="primary" onClick={openCreateOrg}>
-                    新增组织
-                </Button>
-            </div>
+            {(currentUser.authorityType === '管理员' || currentUser.authorityType === '超管') && (
+                <div style={{ marginBottom: 12 }}>
+                    <Button type="primary" onClick={openCreateOrg}>
+                        新增组织
+                    </Button>
+                </div>
+            )}
             <Card className="table-card" bordered={false}>
                 <Table
                     className="data-table"
