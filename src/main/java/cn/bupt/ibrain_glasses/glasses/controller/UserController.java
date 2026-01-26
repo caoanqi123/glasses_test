@@ -64,60 +64,6 @@ public class UserController {
     }
 
     /**
-     * 注册接口：校验输入并保存新用户
-     */
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse> register(@RequestBody User newUser) {
-        String username = newUser.getUsername();
-        String rawPassword = newUser.getPassword();
-        String name = newUser.getName();
-        String authority = newUser.getAuthorityType();
-        String orgId = newUser.getOrganizationId();
-        // 1. 基本字段校验
-        if (username == null || !username.matches("\\d{11}")) {
-            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "用户名必须为11位数字");
-        }
-        if (rawPassword == null || rawPassword.length() < 8) {
-            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "密码长度至少8位");
-        }
-        if (name == null || name.trim().isEmpty()) {
-            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "姓名不能为空");
-        }
-        if (authority == null || !(authority.equals("个人") || authority.equals("组织")
-                || authority.equals("管理员") || authority.equals("超管"))) {
-            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "权限类型不合法");
-        }
-        // 2. 检查账号是否存在
-        if (userService.getById(username) != null) {
-            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "该账号已存在");
-        }
-        // 3. 校验组织有效性（authority 为个人/组织时必须提供组织ID）
-        if (authority.equals("个人") || authority.equals("组织")) {
-            if (orgId == null || orgId.trim().isEmpty()) {
-                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "个人/组织用户必须指定所属组织");
-            }
-            Organization org = organizationService.getById(orgId);
-            if (org == null) {
-                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "组织ID不存在，请先注册组织再注册账号");
-            }
-        } else {
-            // 管理员/超管默认归属组织 001
-            orgId = "001";
-        }
-        // 4. 保存新用户（密码加密存储）
-        String encodedPwd = encoder.encode(rawPassword);
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(encodedPwd);
-        user.setName(name);
-        user.setAuthorityType(authority);
-        user.setOrganizationId(orgId);
-        user.setFirstLogin(false);
-        userService.save(user);
-        return ApiResponse.createResponse(HttpStatus.OK.value(), "注册成功");
-    }
-
-    /**
      * 新增用户（管理员/超管/组织）
      */
     @PostMapping
