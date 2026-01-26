@@ -20,6 +20,7 @@ function App() {
     const [currentUser, setCurrentUser] = useState(null);
     // 当前显示的页面标识: 'timeData' | 'orgManage' | 'userManage'
     const [currentPage, setCurrentPage] = useState('timeData');
+    const [collapsed, setCollapsed] = useState(false);
 
     // 组件挂载时尝试从 localStorage 恢复登录状态
     useEffect(() => {
@@ -71,7 +72,6 @@ function App() {
         userManage: '用户管理',
     };
 
-    const [collapsed, setCollapsed] = useState(false);
     const userMenu = {
         items: [
             {
