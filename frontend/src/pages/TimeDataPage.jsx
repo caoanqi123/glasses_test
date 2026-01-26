@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Input, DatePicker, InputNumber, Popconfirm, Space, message } from 'antd';
+import {
+    Table,
+    Button,
+    Modal,
+    Input,
+    DatePicker,
+    InputNumber,
+    Popconfirm,
+    Space,
+    message,
+    Card,
+    Form,
+    Row,
+    Col,
+} from 'antd';
 import dayjs from 'dayjs';
 
 function TimeDataPage({ currentUser }) {
@@ -139,64 +153,93 @@ function TimeDataPage({ currentUser }) {
         { title: '记录者账号', dataIndex: 'username', key: 'username' },
         { title: '开始时间', dataIndex: 'startTime', key: 'startTime' },
         { title: '持续(秒)', dataIndex: 'duration', key: 'duration' },
-        { title: '操作', key: 'actions',
+        {
+            title: '操作',
+            key: 'actions',
+            width: 120,
             render: (_, record) => (
-                <>
-                    <Button size="small" onClick={() => startEdit(record)}>修改</Button>
+                <Space className="action-buttons">
+                    <Button type="link" size="small" onClick={() => startEdit(record)}>
+                        修改
+                    </Button>
                     <Popconfirm
                         title="确认删除该记录？"
                         onConfirm={() => deleteRecord(record)}
-                        okText="确认" cancelText="取消"
+                        okText="确认"
+                        cancelText="取消"
                     >
-                        <Button size="small" danger style={{ marginLeft: 8 }}>删除</Button>
+                        <Button type="link" size="small" danger>
+                            删除
+                        </Button>
                     </Popconfirm>
-                </>
-            )
+                </Space>
+            ),
         },
     ];
 
     return (
         <div className="time-data-page">
-            <h2>时间数据</h2>
-            {/* 筛选输入框 */}
-            <Space style={{ marginBottom: 16 }}>
-                <Input
-                    placeholder="筛选手机号"
-                    value={filterPhone}
-                    onChange={e => setFilterPhone(e.target.value)}
-                    allowClear
+            <div className="page-header">
+                <div>
+                    <div className="page-title">量表数据</div>
+                    <div className="page-subtitle">时间数据 / 列表</div>
+                </div>
+            </div>
+            <Card className="filter-card" bordered={false}>
+                <Form layout="vertical" className="filter-form">
+                    <Row gutter={[16, 12]}>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="受试者手机号">
+                                <Input
+                                    placeholder="请输入受试者手机号"
+                                    value={filterPhone}
+                                    onChange={e => setFilterPhone(e.target.value)}
+                                    allowClear
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="眼镜 MAC">
+                                <Input
+                                    placeholder="请输入眼镜 MAC"
+                                    value={filterMac}
+                                    onChange={e => setFilterMac(e.target.value)}
+                                    allowClear
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="开始时间">
+                                <DatePicker
+                                    showTime={{ format: 'HH:mm' }}
+                                    placeholder="请选择开始时间"
+                                    value={filterStart ? dayjs(filterStart) : null}
+                                    format="YYYY-MM-DD HH:mm"
+                                    allowClear
+                                    style={{ width: '100%' }}
+                                    onChange={(value) => {
+                                        if (value) {
+                                            const str = value.format("YYYY-MM-DD'T'HH:mm");
+                                            setFilterStart(str);
+                                        } else {
+                                            setFilterStart('');
+                                        }
+                                    }}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Card>
+            <Card bordered={false}>
+                <Table
+                    className="data-table"
+                    columns={columns}
+                    dataSource={filteredList}
+                    rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}`}
+                    pagination={{ pageSize: 8, showSizeChanger: false }}
                 />
-                <Input
-                    placeholder="筛选眼镜MAC"
-                    value={filterMac}
-                    onChange={e => setFilterMac(e.target.value)}
-                    allowClear
-                />
-                <DatePicker
-                    showTime={{ format: 'HH:mm' }}
-                    placeholder="筛选开始时间"
-                    value={filterStart ? dayjs(filterStart) : null}
-                    format="YYYY-MM-DD HH:mm"
-                    allowClear
-                    onChange={(value, dateString) => {
-                        if (value) {
-                            // 转换为包含'T'的格式子串用于匹配
-                            const str = value.format("YYYY-MM-DD'T'HH:mm");
-                            setFilterStart(str);
-                        } else {
-                            setFilterStart('');
-                        }
-                    }}
-                />
-            </Space>
-            {/* 数据列表表格 */}
-            <Table
-                className="data-table"
-                columns={columns}
-                dataSource={filteredList}
-                rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}`}
-                pagination={{ pageSize: 8 }}
-            />
+            </Card>
             {/* 编辑记录弹窗 */}
             {editingRecord && (
                 <Modal

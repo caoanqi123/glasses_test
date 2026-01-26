@@ -40,33 +40,38 @@ function LoginPage({ onLoginSuccess }) {
     };
 
     return (
-        <div className="login-page" style={{ maxWidth: 300, margin: '100px auto', textAlign: 'center' }}>
-            <h2>用户登录</h2>
-            <Form onFinish={handleFinish}>
-                <Form.Item
-                    name="username"
-                    rules={[
-                        { required: true, message: '请输入账号' },
-                        { pattern: /^\d{11}$/, message: '账号必须为11位数字' }
-                    ]}
-                >
-                    <Input placeholder="11位手机号" maxLength={11} allowClear />
-                </Form.Item>
-                <Form.Item
-                    name="password"
-                    rules={[
-                        { required: true, message: '请输入密码' },
-                        { min: 8, message: '密码长度不能少于8位' }
-                    ]}
-                >
-                    <Input.Password placeholder="至少8位密码" />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                        登录
-                    </Button>
-                </Form.Item>
-            </Form>
+        <div className="login-page">
+            <div className="login-card">
+                <div className="login-title">用户登录</div>
+                <div className="login-subtitle">欢迎使用神经心理评估系统</div>
+                <Form layout="vertical" onFinish={handleFinish}>
+                    <Form.Item
+                        label="手机号"
+                        name="username"
+                        rules={[
+                            { required: true, message: '请输入账号' },
+                            { pattern: /^\d{11}$/, message: '账号必须为11位数字' }
+                        ]}
+                    >
+                        <Input placeholder="11位手机号" maxLength={11} allowClear />
+                    </Form.Item>
+                    <Form.Item
+                        label="密码"
+                        name="password"
+                        rules={[
+                            { required: true, message: '请输入密码' },
+                            { min: 8, message: '密码长度不能少于8位' }
+                        ]}
+                    >
+                        <Input.Password placeholder="至少8位密码" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                            登录
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </div>
         </div>
     );
 }

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button } from 'antd';
+import { Layout, Menu, Button, Avatar } from 'antd';
 import {
     UserOutlined,
     DatabaseOutlined,
     TeamOutlined,
 } from '@ant-design/icons';
+import './App.css';
 import LoginPage from './pages/LoginPage';
 import TimeDataPage from './pages/TimeDataPage';
 import OrgManagementPage from './pages/OrgManagementPage';
 import UserManagementPage from './pages/UserManagementPage';
 
-const { Sider, Content } = Layout;
+const { Sider, Content, Header } = Layout;
 
 function App() {
     // 当前登录用户信息（null 表示未登录）
@@ -62,9 +63,13 @@ function App() {
     ];
 
     return (
-        <Layout style={{ minHeight: '100vh' }}>
+        <Layout className="app-layout">
             {/* 左侧侧边栏菜单 */}
-            <Sider width={200} style={{ position: 'relative' }}>
+            <Sider width={220} className="app-sider">
+                <div className="app-logo">
+                    <DatabaseOutlined />
+                    <span>神经心理评估系统</span>
+                </div>
                 <Menu
                     theme="dark"
                     mode="inline"
@@ -72,16 +77,25 @@ function App() {
                     onClick={(e) => setCurrentPage(e.key)}
                     items={menuItems}
                 />
-                <div style={{ position: 'absolute', bottom: 20, left: 20, color: '#fff' }}>
-                    <div>当前用户: {name || currentUser.username}</div>
-                    <Button type="primary" ghost size="small" onClick={handleLogout} style={{ marginTop: 8 }}>
+                <div style={{ position: 'absolute', bottom: 24, left: 20, right: 20, color: '#cbd5f5' }}>
+                    <div style={{ marginBottom: 8 }}>当前用户：{name || currentUser.username}</div>
+                    <Button type="primary" ghost size="small" onClick={handleLogout}>
                         退出登录
                     </Button>
                 </div>
             </Sider>
             {/* 右侧主内容区 */}
             <Layout>
-                <Content style={{ padding: '16px' }}>
+                <Header className="app-header">
+                    <div className="header-title">量表数据管理</div>
+                    <div className="header-user">
+                        <span>{name || currentUser.username}</span>
+                        <Avatar style={{ backgroundColor: '#3b82f6' }}>
+                            {(name || currentUser.username).slice(0, 1)}
+                        </Avatar>
+                    </div>
+                </Header>
+                <Content className="app-content">
                     {currentPage === 'timeData' && <TimeDataPage currentUser={currentUser} />}
                     {currentPage === 'orgManage' && <OrgManagementPage />}
                     {currentPage === 'userManage' && <UserManagementPage currentUser={currentUser} />}
