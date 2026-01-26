@@ -11,3 +11,11 @@
 2026-01-26 12:27:28.304 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.OrgDataShare ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
 2026-01-26 12:27:28.437 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.TimeData".
 2026-01-26 12:27:28.437 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.TimeData ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-01-26 17:38:41.679 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.OrgDataShare".
+2026-01-26 17:38:41.683 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.OrgDataShare ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-01-26 17:38:41.753 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.TimeData".
+2026-01-26 17:38:41.753 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.TimeData ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-01-26 19:00:40.717 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.OrgDataShare".
+2026-01-26 19:00:40.722 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.OrgDataShare ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-01-26 19:00:40.789 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.TimeData".
+2026-01-26 19:00:40.789 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.TimeData ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
