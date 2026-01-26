@@ -1,10 +1,13 @@
 package cn.bupt.ibrain_glasses.glasses.controller;
 
 import cn.bupt.ibrain_glasses.glasses.model.Organization;
+import cn.bupt.ibrain_glasses.glasses.model.TimeData;
 import cn.bupt.ibrain_glasses.glasses.model.User;
 import cn.bupt.ibrain_glasses.glasses.service.OrganizationService;
+import cn.bupt.ibrain_glasses.glasses.service.TimeDataService;
 import cn.bupt.ibrain_glasses.glasses.service.UserService;
 import cn.bupt.ibrain_glasses.glasses.utils.ApiResponse;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,11 +24,13 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserService userService;
     private final OrganizationService organizationService;
+    private final TimeDataService timeDataService;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public UserController(UserService userService, OrganizationService orgService) {
+    public UserController(UserService userService, OrganizationService orgService, TimeDataService timeDataService) {
         this.userService = userService;
         this.organizationService = orgService;
+        this.timeDataService = timeDataService;
     }
 
     /**
@@ -341,6 +346,11 @@ public class UserController {
                     return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除该用户权限");
                 }
             }
+        }
+        String fallbackUsername = "18459898778";
+        if (!fallbackUsername.equals(username)) {
+            timeDataService.update(
+                    new UpdateWrapper<TimeData>().set("username", fallbackUsername).eq("username", username));
         }
         userService.removeById(username);
         return ApiResponse.createResponse(HttpStatus.OK.value(), "用户已删除");
