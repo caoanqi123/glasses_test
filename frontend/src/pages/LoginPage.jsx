@@ -19,7 +19,7 @@ function LoginPage({ onLoginSuccess }) {
                 return;
             }
             // 调用后端登录接口
-            const res = await fetch('/api/users/login', {
+            const res = await fetch('/users/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ username, password }).toString()
@@ -55,7 +55,7 @@ function LoginPage({ onLoginSuccess }) {
             return;
         }
         try {
-            const res = await fetch(`/api/users/${encodeURIComponent(pendingUser.username)}/password?currentUsername=${pendingUser.username}`, {
+            const res = await fetch(`/users/${encodeURIComponent(pendingUser.username)}/password?currentUsername=${pendingUser.username}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ newPassword }),

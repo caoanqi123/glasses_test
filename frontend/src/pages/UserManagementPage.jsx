@@ -18,7 +18,7 @@ function UserManagementPage({ currentUser }) {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await fetch(`/api/users?username=${currentUser.username}`);
+                const res = await fetch(`/users?username=${currentUser.username}`);
                 const data = await res.json();
                 if (!data.success) {
                     message.error(data.message || "无法获取用户列表");
@@ -77,7 +77,7 @@ function UserManagementPage({ currentUser }) {
         // 组织选项对于管理员/超管用户可为空，无需特别校验
         const payload = { authorityType: newAuthority, organizationId: newOrgId, name: newName };
         try {
-            const res = await fetch(`/api/users/${encodeURIComponent(editingUser.username)}?currentUsername=${currentUser.username}`, {
+            const res = await fetch(`/users/${encodeURIComponent(editingUser.username)}?currentUsername=${currentUser.username}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -117,7 +117,7 @@ function UserManagementPage({ currentUser }) {
     // 删除用户
     const deleteUser = async (user) => {
         try {
-            const res = await fetch(`/api/users/${encodeURIComponent(user.username)}?currentUsername=${currentUser.username}`, {
+            const res = await fetch(`/users/${encodeURIComponent(user.username)}?currentUsername=${currentUser.username}`, {
                 method: 'DELETE',
             });
             const data = await res.json();
@@ -198,7 +198,7 @@ function UserManagementPage({ currentUser }) {
             return;
         }
         try {
-            const res = await fetch(`/api/users?currentUsername=${currentUser.username}`, {
+            const res = await fetch(`/users?currentUsername=${currentUser.username}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
