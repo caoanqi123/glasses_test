@@ -96,8 +96,8 @@ public class UserController {
                 return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "组织ID不存在，请先注册组织再注册账号");
             }
         } else {
-            // 管理员/超管无需组织
-            orgId = "";
+            // 管理员/超管默认归属组织 001
+            orgId = "001";
         }
         // 4. 保存新用户（密码加密存储）
         String encodedPwd = encoder.encode(rawPassword);
@@ -166,7 +166,11 @@ public class UserController {
             if ("组织".equals(currentAuth)) {
                 return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限设置该权限");
             }
-            orgId = "";
+            orgId = (orgId == null || orgId.trim().isEmpty()) ? "001" : orgId.trim();
+            Organization org = organizationService.getById(orgId);
+            if (org == null) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "组织ID不存在");
+            }
         }
         String defaultPassword = "ok123456";
         String encodedPwd = encoder.encode(defaultPassword);
@@ -290,15 +294,12 @@ public class UserController {
             target.setOrganizationId(newOrgId);
         } else {
             // 管理员/超管角色，如果传了组织则校验，否则设为空
-            if (newOrgId == null || newOrgId.trim().isEmpty()) {
-                target.setOrganizationId("");
-            } else {
-                Organization org = organizationService.getById(newOrgId);
-                if (org == null) {
-                    return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "指定的组织不存在");
-                }
-                target.setOrganizationId(newOrgId);
+            String resolvedOrgId = (newOrgId == null || newOrgId.trim().isEmpty()) ? "001" : newOrgId.trim();
+            Organization org = organizationService.getById(resolvedOrgId);
+            if (org == null) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "指定的组织不存在");
             }
+            target.setOrganizationId(resolvedOrgId);
         }
         if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
             target.setName(dto.getName().trim());
