@@ -156,20 +156,29 @@ public class UserController {
                                                   @RequestParam String currentUsername,
                                                   @RequestBody UpdateUserDto dto) {
         User currentUser = userService.getById(currentUsername);
-        if (currentUser == null || "个人".equals(currentUser.getAuthorityType())) {
+        if (currentUser == null) {
             return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
         }
         User target = userService.getById(username);
         if (target == null) {
             return ApiResponse.createResponse(HttpStatus.NOT_FOUND.value(), "用户不存在");
         }
-        // 组织管理员不能修改非本组织用户，且不能赋予超出自己权限级别的权限
-        if ("组织".equals(currentUser.getAuthorityType())) {
-            if (!currentUser.getOrganizationId().equals(target.getOrganizationId())) {
+        String currentAuth = currentUser.getAuthorityType();
+        String targetAuth = target.getAuthorityType();
+        if ("个人".equals(currentAuth)) {
+            if (!Objects.equals(currentUser.getUsername(), target.getUsername())) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+            }
+        } else if ("组织".equals(currentAuth)) {
+            if (!Objects.equals(currentUser.getOrganizationId(), target.getOrganizationId())) {
                 return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改非本组织的用户");
             }
-            if ("管理员".equals(dto.getAuthorityType()) || "超管".equals(dto.getAuthorityType())) {
-                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能赋予更高的权限级别");
+            if (!"个人".equals(targetAuth)) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改该用户权限");
+            }
+        } else if ("管理员".equals(currentAuth)) {
+            if ("管理员".equals(targetAuth) || "超管".equals(targetAuth)) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能修改该用户权限");
             }
         }
         // 验证新的权限类型是否合法，如为空则保留原值
@@ -181,6 +190,15 @@ public class UserController {
             }
         } else {
             newAuth = target.getAuthorityType();
+        }
+        if ("个人".equals(currentAuth) && !"个人".equals(newAuth)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能提升权限");
+        }
+        if ("组织".equals(currentAuth) && !"个人".equals(newAuth)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能提升权限");
+        }
+        if ("管理员".equals(currentAuth) && "超管".equals(newAuth)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能提升权限");
         }
         String newOrgId = dto.getOrganizationId();
         // 根据权限类型处理组织ID要求
@@ -205,6 +223,9 @@ public class UserController {
                 target.setOrganizationId(newOrgId);
             }
         }
+        if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
+            target.setName(dto.getName().trim());
+        }
         target.setAuthorityType(newAuth);
         userService.updateById(target);
         return ApiResponse.createResponse(HttpStatus.OK.value(), "用户信息已更新");
@@ -217,16 +238,30 @@ public class UserController {
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable String username,
                                                   @RequestParam String currentUsername) {
         User currentUser = userService.getById(currentUsername);
-        if (currentUser == null || "个人".equals(currentUser.getAuthorityType())) {
+        if (currentUser == null) {
             return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
         }
         User target = userService.getById(username);
         if (target == null) {
             return ApiResponse.createResponse(HttpStatus.NOT_FOUND.value(), "用户不存在");
         }
-        if ("组织".equals(currentUser.getAuthorityType())
-                && !currentUser.getOrganizationId().equals(target.getOrganizationId())) {
-            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除非本组织的用户");
+        String currentAuth = currentUser.getAuthorityType();
+        String targetAuth = target.getAuthorityType();
+        if ("个人".equals(currentAuth)) {
+            if (!Objects.equals(currentUser.getUsername(), target.getUsername())) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+            }
+        } else if ("组织".equals(currentAuth)) {
+            if (!Objects.equals(currentUser.getOrganizationId(), target.getOrganizationId())) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除非本组织的用户");
+            }
+            if (!"个人".equals(targetAuth)) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除该用户权限");
+            }
+        } else if ("管理员".equals(currentAuth)) {
+            if ("管理员".equals(targetAuth) || "超管".equals(targetAuth)) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "不能删除该用户权限");
+            }
         }
         userService.removeById(username);
         return ApiResponse.createResponse(HttpStatus.OK.value(), "用户已删除");
@@ -251,9 +286,12 @@ public class UserController {
     static class UpdateUserDto {
         private String authorityType;
         private String organizationId;
+        private String name;
         public String getAuthorityType() { return authorityType; }
         public void setAuthorityType(String a) { this.authorityType = a; }
         public String getOrganizationId() { return organizationId; }
         public void setOrganizationId(String o) { this.organizationId = o; }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
     }
 }

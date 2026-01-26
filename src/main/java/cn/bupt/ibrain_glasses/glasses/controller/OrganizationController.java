@@ -51,6 +51,32 @@ public class OrganizationController {
     }
 
     /**
+     * 新增组织
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse> createOrganization(@RequestParam String currentUsername,
+                                                          @RequestBody Organization org) {
+        User currentUser = userService.getById(currentUsername);
+        if (currentUser == null || "个人".equals(currentUser.getAuthorityType()) || "组织".equals(currentUser.getAuthorityType())) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+        }
+        if (org.getOrganizationId() == null || org.getOrganizationId().trim().isEmpty()) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "组织ID不能为空");
+        }
+        if (org.getOrganizationName() == null || org.getOrganizationName().trim().isEmpty()) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "组织名称不能为空");
+        }
+        if (service.getById(org.getOrganizationId()) != null) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "组织ID已存在");
+        }
+        Organization newOrg = new Organization();
+        newOrg.setOrganizationId(org.getOrganizationId().trim());
+        newOrg.setOrganizationName(org.getOrganizationName().trim());
+        service.save(newOrg);
+        return ApiResponse.createResponse(HttpStatus.OK.value(), "组织创建成功");
+    }
+
+    /**
      * 修改组织名称（组织ID不可变）
      */
     @PutMapping("/{orgId}")

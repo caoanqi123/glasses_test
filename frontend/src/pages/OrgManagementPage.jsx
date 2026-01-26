@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Table, message, Card, Button, Modal, Input, Popconfirm, Space } from 'antd';
+import { Table, message, Card, Button, Modal, Input, Popconfirm, Space, Form } from 'antd';
 
 function OrgManagementPage({ currentUser }) {
     const [orgList, setOrgList] = useState([]);
     const [editingOrg, setEditingOrg] = useState(null);
     const [newOrgName, setNewOrgName] = useState('');
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [createOrgId, setCreateOrgId] = useState('');
+    const [createOrgName, setCreateOrgName] = useState('');
 
     useEffect(() => {
         const fetchOrgs = async () => {
@@ -81,6 +84,51 @@ function OrgManagementPage({ currentUser }) {
         }
     };
 
+    const openCreateOrg = () => {
+        setIsCreateOpen(true);
+    };
+
+    const cancelCreateOrg = () => {
+        setIsCreateOpen(false);
+    };
+
+    const submitCreateOrg = async () => {
+        if (!createOrgId.trim()) {
+            message.error("组织ID不能为空");
+            return;
+        }
+        if (!createOrgName.trim()) {
+            message.error("组织名称不能为空");
+            return;
+        }
+        try {
+            const res = await fetch(`/organizations?currentUsername=${currentUser.username}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    organizationId: createOrgId.trim(),
+                    organizationName: createOrgName.trim(),
+                }),
+            });
+            const data = await res.json();
+            if (!data.success) {
+                message.error(data.message || "新增失败");
+            } else {
+                setOrgList(prev => [
+                    ...prev,
+                    { organizationId: createOrgId.trim(), organizationName: createOrgName.trim() },
+                ]);
+                message.success("组织已新增");
+                setCreateOrgId('');
+                setCreateOrgName('');
+                setIsCreateOpen(false);
+            }
+        } catch (err) {
+            console.error("Create organization failed:", err);
+            message.error("新增请求失败");
+        }
+    };
+
     const columns = [
         { title: '组织ID', dataIndex: 'organizationId', key: 'organizationId' },
         { title: '组织名称', dataIndex: 'organizationName', key: 'organizationName' },
@@ -110,6 +158,11 @@ function OrgManagementPage({ currentUser }) {
                 <div>
                     <div className="page-title">组织管理</div>
                 </div>
+            </div>
+            <div style={{ marginBottom: 12 }}>
+                <Button type="primary" onClick={openCreateOrg}>
+                    新增组织
+                </Button>
             </div>
             <Card className="table-card" bordered={false}>
                 <Table
@@ -142,6 +195,31 @@ function OrgManagementPage({ currentUser }) {
                     </div>
                 </Modal>
             )}
+            <Modal
+                title="新增组织"
+                open={isCreateOpen}
+                onOk={submitCreateOrg}
+                onCancel={cancelCreateOrg}
+                okText="提交"
+                cancelText="取消"
+            >
+                <Form layout="vertical">
+                    <Form.Item label="组织ID">
+                        <Input
+                            value={createOrgId}
+                            onChange={(e) => setCreateOrgId(e.target.value)}
+                            placeholder="请输入组织ID"
+                        />
+                    </Form.Item>
+                    <Form.Item label="组织名称">
+                        <Input
+                            value={createOrgName}
+                            onChange={(e) => setCreateOrgName(e.target.value)}
+                            placeholder="请输入组织名称"
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 }

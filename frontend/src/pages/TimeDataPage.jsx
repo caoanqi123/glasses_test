@@ -61,7 +61,7 @@ function TimeDataPage({ currentUser }) {
         setNewAccount(record.username);
         // 将开始时间字符串转换为 dayjs 对象作为初始值
         if (record.startTime) {
-            setNewStartTime(dayjs(record.startTime));
+            setNewStartTime(dayjs(String(record.startTime).replace('T', ' ')));
         } else {
             setNewStartTime(null);
         }
@@ -94,7 +94,7 @@ function TimeDataPage({ currentUser }) {
         // 准备请求体数据
         const payload = {
             username: newAccount,
-            startTime: newStartTime.format("YYYY-MM-DD'T'HH:mm:ss"),
+            startTime: newStartTime.format("YYYY-MM-DDTHH:mm:ss"),
             duration: newDuration,
         };
         const { subjectPhone, glassesMac } = editingRecord.timeDataPK;
@@ -260,38 +260,41 @@ function TimeDataPage({ currentUser }) {
                     okText="提交"
                     cancelText="取消"
                 >
-                    <p>
-                        <b>受试者:</b> {editingRecord.timeDataPK.subjectPhone}&nbsp;&nbsp;
-                        <b>眼镜MAC:</b> {editingRecord.timeDataPK.glassesMac}
-                    </p>
-                    <div style={{ marginBottom: 8 }}>
-                        <b>记录者账号:</b>{' '}
-                        <Input
-                            value={newAccount}
-                            onChange={e => setNewAccount(e.target.value)}
-                            placeholder="11位账号"
-                            maxLength={11}
-                        />
-                    </div>
-                    <div style={{ marginBottom: 8 }}>
-                        <b>开始时间:</b>{' '}
-                        <DatePicker
-                            showTime={{ format: 'HH:mm:ss' }}
-                            value={newStartTime}
-                            onChange={(val) => setNewStartTime(val)}
-                            format="YYYY-MM-DD HH:mm:ss"
-                        />
-                    </div>
-                    <div>
-                        <b>持续时间(秒):</b>{' '}
-                        <InputNumber
-                            value={newDuration}
-                            min={1}
-                            step={1}
-                            precision={0}
-                            onChange={(value) => setNewDuration(value)}
-                        />
-                    </div>
+                    <Form layout="vertical">
+                        <Form.Item label="被试手机号">
+                            <Input value={editingRecord.timeDataPK.subjectPhone} disabled />
+                        </Form.Item>
+                        <Form.Item label="MAC">
+                            <Input value={editingRecord.timeDataPK.glassesMac} disabled />
+                        </Form.Item>
+                        <Form.Item label="关联账号">
+                            <Input
+                                value={newAccount}
+                                onChange={e => setNewAccount(e.target.value)}
+                                placeholder="11位账号"
+                                maxLength={11}
+                            />
+                        </Form.Item>
+                        <Form.Item label="开始时间">
+                            <DatePicker
+                                showTime={{ format: 'HH:mm:ss' }}
+                                value={newStartTime}
+                                onChange={(val) => setNewStartTime(val)}
+                                format="YYYY-MM-DD HH:mm:ss"
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
+                        <Form.Item label="持续时间(秒)">
+                            <InputNumber
+                                value={newDuration}
+                                min={1}
+                                step={1}
+                                precision={0}
+                                onChange={(value) => setNewDuration(value)}
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
+                    </Form>
                 </Modal>
             )}
         </div>
