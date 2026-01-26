@@ -38,6 +38,7 @@ function LoginPage({ onLoginSuccess }) {
                     localStorage.setItem('username', user.username);
                     localStorage.setItem('name', user.name || '');
                     localStorage.setItem('authorityType', user.authorityType);
+                    localStorage.setItem('organizationId', user.organizationId || '');
                     onLoginSuccess(user);
                     message.success("登录成功");
                 }
@@ -67,6 +68,7 @@ function LoginPage({ onLoginSuccess }) {
             localStorage.setItem('username', pendingUser.username);
             localStorage.setItem('name', pendingUser.name || '');
             localStorage.setItem('authorityType', pendingUser.authorityType);
+            localStorage.setItem('organizationId', pendingUser.organizationId || '');
             onLoginSuccess(pendingUser);
             setShowFirstLogin(false);
             setPendingUser(null);
@@ -82,7 +84,6 @@ function LoginPage({ onLoginSuccess }) {
         <div className="login-page">
             <div className="login-card">
                 <div className="login-title">用户登录</div>
-                <div className="login-subtitle">欢迎使用神经心理评估系统</div>
                 <Form layout="vertical" onFinish={handleFinish}>
                     <Form.Item
                         label="手机号"

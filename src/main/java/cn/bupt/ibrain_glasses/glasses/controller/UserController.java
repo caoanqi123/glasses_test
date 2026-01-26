@@ -48,7 +48,13 @@ public class UserController {
             return ApiResponse.createResponse(HttpStatus.UNAUTHORIZED.value(), "账号或密码错误");
         }
         // 登录成功，不返回密码，只返回必要信息
-        LoginResp data = new LoginResp(user.getUsername(), user.getName(), user.getAuthorityType(), Boolean.TRUE.equals(user.getFirstLogin()));
+        LoginResp data = new LoginResp(
+                user.getUsername(),
+                user.getName(),
+                user.getAuthorityType(),
+                user.getOrganizationId(),
+                Boolean.TRUE.equals(user.getFirstLogin())
+        );
         return ApiResponse.createResponse(HttpStatus.OK.value(), "登录成功", data);
     }
 
@@ -364,16 +370,19 @@ public class UserController {
         private String username;
         private String name;
         private String authorityType;
+        private String organizationId;
         private boolean firstLogin;
-        public LoginResp(String username, String name, String authorityType, boolean firstLogin) {
+        public LoginResp(String username, String name, String authorityType, String organizationId, boolean firstLogin) {
             this.username = username;
             this.name = name;
             this.authorityType = authorityType;
+            this.organizationId = organizationId;
             this.firstLogin = firstLogin;
         }
         public String getUsername() { return username; }
         public String getName() { return name; }
         public String getAuthorityType() { return authorityType; }
+        public String getOrganizationId() { return organizationId; }
         public boolean isFirstLogin() { return firstLogin; }
     }
 

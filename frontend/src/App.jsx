@@ -24,11 +24,13 @@ function App() {
         const savedUsername = localStorage.getItem('username');
         const savedName = localStorage.getItem('name');
         const savedAuth = localStorage.getItem('authorityType');
+        const savedOrgId = localStorage.getItem('organizationId');
         if (savedUsername && savedAuth) {
             setCurrentUser({
                 username: savedUsername,
                 name: savedName,
                 authorityType: savedAuth,
+                organizationId: savedOrgId || '',
             });
         }
     }, []);
@@ -38,6 +40,7 @@ function App() {
         localStorage.removeItem('username');
         localStorage.removeItem('name');
         localStorage.removeItem('authorityType');
+        localStorage.removeItem('organizationId');
         setCurrentUser(null);
         setCurrentPage('timeData');
     };
@@ -53,13 +56,11 @@ function App() {
     }
 
     // 根据当前用户权限控制菜单项显示
-    const { authorityType, name } = currentUser;
-    const isOrgAdmin = authorityType === '组织';
-    const isSysAdmin = authorityType === '管理员' || authorityType === '超管';
+    const { name } = currentUser;
     const menuItems = [
         { key: 'timeData', icon: <DatabaseOutlined />, label: '时间数据' },
-        ...(isSysAdmin ? [{ key: 'orgManage', icon: <TeamOutlined />, label: '组织管理' }] : []),
-        ...(isOrgAdmin || isSysAdmin ? [{ key: 'userManage', icon: <UserOutlined />, label: '用户管理' }] : []),
+        { key: 'orgManage', icon: <TeamOutlined />, label: '组织管理' },
+        { key: 'userManage', icon: <UserOutlined />, label: '用户管理' },
     ];
 
     const pageTitleMap = {
@@ -94,7 +95,7 @@ function App() {
                 <Header className="app-header">
                     <div className="header-title">{pageTitleMap[currentPage]}</div>
                     <div className="header-user">
-                        <span>{name || currentUser.username}</span>
+                        <span>{currentUser.username}</span>
                         <Avatar style={{ backgroundColor: '#3b82f6' }}>
                             {(name || currentUser.username).slice(0, 1)}
                         </Avatar>
