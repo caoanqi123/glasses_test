@@ -2765,3 +2765,8 @@ java.sql.SQLSyntaxErrorException: Unknown column 'org_data_share_p_k' in 'field 
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Thread.java:750)
+2026-01-26 16:39:55.144 [http-nio-8083-exec-1] ERROR c.b.i.glasses.controller.TimeDataController - Invalid time data: key=(13800138000,EE:83:3C:F2:83:6), username=18459898778, start_time=2026-01-26T01:10:30, duration=120
+2026-01-26 16:39:55.145 [http-nio-8083-exec-1] ERROR c.b.i.glasses.controller.TimeDataController - Invalid time data: key=(13800138000,EE:83:3C:F2:83:6), username=18459898778, start_time=2026-01-26T01:10:30, duration=120
+2026-01-26 16:39:55.399 [http-nio-8083-exec-1] ERROR c.b.i.glasses.controller.TimeDataController - Batch insert rejected: total=5, invalid=2, duplicate=2, msg=格式错误：(13800138000,EE:83:3C:F2:83:6)、(13800138000,EE:83:3C:F2:83:6)；重复：(13800138001,EE:83:3C:F2:83:63)、(13800138002,EE:83:3C:F2:83:64)
+2026-01-26 16:40:51.376 [http-nio-8083-exec-7] ERROR c.b.i.glasses.controller.TimeDataController - Invalid time data: key=(13800138001,EE:83:3C:F2:83:7), username=18459898778, start_time=2026-01-26T01:10:30, duration=120
+2026-01-26 16:40:51.377 [http-nio-8083-exec-7] ERROR c.b.i.glasses.controller.TimeDataController - Batch insert rejected: total=1, invalid=1, duplicate=0, msg=格式错误：(13800138001,EE:83:3C:F2:83:7)

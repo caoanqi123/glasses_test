@@ -1,13 +1,19 @@
 package cn.bupt.ibrain_glasses.glasses.controller;
 
+import cn.bupt.ibrain_glasses.glasses.mapper.TimeDataMapper;
 import cn.bupt.ibrain_glasses.glasses.model.OrgDataShare;
 import cn.bupt.ibrain_glasses.glasses.model.TimeData;
+import cn.bupt.ibrain_glasses.glasses.model.TimeDataPK;
 import cn.bupt.ibrain_glasses.glasses.model.User;
 import cn.bupt.ibrain_glasses.glasses.service.OrgDataShareService;
 import cn.bupt.ibrain_glasses.glasses.service.TimeDataService;
 import cn.bupt.ibrain_glasses.glasses.service.UserService;
 import cn.bupt.ibrain_glasses.glasses.utils.ApiResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +29,10 @@ public class TimeDataController {
     private final TimeDataService timeDataService;
     private final UserService userService;
     private final OrgDataShareService orgDataShareService;
+    private static final Logger logger = LoggerFactory.getLogger(TimeDataController.class);
 
+    @Autowired
+    private TimeDataMapper timeDataMapper;
     public TimeDataController(TimeDataService tdService,
                               UserService userService,
                               OrgDataShareService shareService) {
@@ -31,6 +40,67 @@ public class TimeDataController {
         this.userService = userService;
         this.orgDataShareService = shareService;
     }
+
+
+    @PostMapping("/batch")
+    public ResponseEntity<ApiResponse> uploadTimeData(@RequestBody List<TimeData> timeDataList) {
+        if (CollectionUtils.isEmpty(timeDataList)) {
+            logger.error("Upload time data failed: empty list");
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "参数错误：上传为空列表");
+        }
+
+        List<String> invalidKeys = new ArrayList<>();
+        List<String> duplicateKeys = new ArrayList<>();
+
+        for (TimeData t : timeDataList) {
+            TimeDataPK k = (t == null) ? null : t.getTimeDataPK();
+            String sp = (k == null) ? null : k.getSubjectPhone();
+            String gm = (k == null) ? null : k.getGlassesMac();
+            String u  = (t == null) ? null : t.getUsername();
+            String key = "(" + sp + "," + gm + ")";
+
+            boolean ok =
+                    t != null &&
+                            sp != null && sp.length() == 11 &&
+                            gm != null && gm.length() == 17 &&
+                            u  != null && u.length()  == 11 &&
+                            t.getStartTime() != null &&
+                            t.getDuration() != null && t.getDuration() > 0;
+
+            if (!ok) {
+                invalidKeys.add(key);
+                logger.error("Invalid time data: key={}, username={}, start_time={}, duration={}",
+                        key, u, (t == null ? null : t.getStartTime()), (t == null ? null : t.getDuration()));
+                continue;
+            }
+
+            try {
+                timeDataMapper.insertTimeData(t);
+                logger.info("Inserted time data: key={}, username={}, start_time={}, duration={}",
+                        key, u, t.getStartTime(), t.getDuration());
+            } catch (org.springframework.dao.DuplicateKeyException ex) {
+                duplicateKeys.add(key);
+                logger.warn("Duplicate time data: key={}, username={}", key, u);
+            }
+        }
+
+        if (invalidKeys.isEmpty() && duplicateKeys.isEmpty()) {
+            logger.info("Batch insert success: total={}, invalid=0, duplicate=0", timeDataList.size());
+            return ApiResponse.createResponse(HttpStatus.OK.value(), "全部保存成功");
+        }
+
+        String msg = (invalidKeys.isEmpty() ? "" : "格式错误：" + String.join("、", invalidKeys))
+                + (!invalidKeys.isEmpty() && !duplicateKeys.isEmpty() ? "；" : "")
+                + (duplicateKeys.isEmpty() ? "" : "重复：" + String.join("、", duplicateKeys));
+
+        logger.error("Batch insert rejected: total={}, invalid={}, duplicate={}, msg={}",
+                timeDataList.size(), invalidKeys.size(), duplicateKeys.size(), msg);
+
+        return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), msg);
+    }
+
+
+
 
     /**
      * 获取当前用户有权限查看的 TimeData 列表
