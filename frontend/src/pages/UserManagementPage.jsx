@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Select, Popconfirm, message } from 'antd';
+import { Table, Button, Modal, Select, Popconfirm, message, Card } from 'antd';
 
 function UserManagementPage({ currentUser }) {
     const [userList, setUserList] = useState([]);      // 用户列表数据
@@ -152,21 +152,27 @@ function UserManagementPage({ currentUser }) {
     ];
 
     return (
-        <div className="user-management-page">
-            <h2>用户管理</h2>
+        <div className="user-management-page page-container">
+            <div className="page-header">
+                <div>
+                    <div className="page-title">用户管理</div>
+                </div>
+            </div>
             {/* 用户列表表格 */}
-            <Table
-                className="data-table"
-                columns={columns}
-                dataSource={userList}
-                rowKey="username"
-                pagination={{ pageSize: 8 }}
-            />
+            <Card className="table-card" bordered={false}>
+                <Table
+                    className="data-table"
+                    columns={columns}
+                    dataSource={userList}
+                    rowKey="username"
+                    pagination={{ pageSize: 8, showSizeChanger: false }}
+                />
+            </Card>
             {/* 编辑用户弹窗 */}
             {editingUser && (
                 <Modal
                     title={`编辑用户: ${editingUser.username}`}
-                    visible={!!editingUser}
+                    open={!!editingUser}
                     onOk={submitUserEdit}
                     onCancel={cancelEditUser}
                     okText="保存"

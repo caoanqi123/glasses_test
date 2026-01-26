@@ -68,7 +68,7 @@ function App() {
             <Sider width={220} className="app-sider">
                 <div className="app-logo">
                     <DatabaseOutlined />
-                    <span>神经心理评估系统</span>
+                    <span>眼镜数据管理系统</span>
                 </div>
                 <Menu
                     theme="dark"
@@ -77,17 +77,17 @@ function App() {
                     onClick={(e) => setCurrentPage(e.key)}
                     items={menuItems}
                 />
-                <div style={{ position: 'absolute', bottom: 24, left: 20, right: 20, color: '#cbd5f5' }}>
-                    <div style={{ marginBottom: 8 }}>当前用户：{name || currentUser.username}</div>
+                <div className="sider-footer">
+                    <div className="sider-user">当前用户：{name || currentUser.username}</div>
                     <Button type="primary" ghost size="small" onClick={handleLogout}>
                         退出登录
                     </Button>
                 </div>
             </Sider>
             {/* 右侧主内容区 */}
-            <Layout>
+            <Layout className="app-main">
                 <Header className="app-header">
-                    <div className="header-title">量表数据管理</div>
+                    <div className="header-title">眼镜数据管理系统</div>
                     <div className="header-user">
                         <span>{name || currentUser.username}</span>
                         <Avatar style={{ backgroundColor: '#3b82f6' }}>
@@ -97,7 +97,7 @@ function App() {
                 </Header>
                 <Content className="app-content">
                     {currentPage === 'timeData' && <TimeDataPage currentUser={currentUser} />}
-                    {currentPage === 'orgManage' && <OrgManagementPage />}
+                    {currentPage === 'orgManage' && <OrgManagementPage currentUser={currentUser} />}
                     {currentPage === 'userManage' && <UserManagementPage currentUser={currentUser} />}
                 </Content>
             </Layout>

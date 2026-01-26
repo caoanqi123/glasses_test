@@ -5,6 +5,13 @@
 
 .app-sider {
   background: #0f172a;
+  height: 100vh;
+}
+
+.app-sider .ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .app-logo {
@@ -21,9 +28,23 @@
   font-size: 16px;
 }
 
+.sider-footer {
+  margin-top: auto;
+  padding: 0 20px 24px;
+  color: #cbd5f5;
+}
+
+.sider-user {
+  margin-bottom: 8px;
+}
+
 .app-logo span {
   display: inline-block;
   line-height: 1;
+}
+
+.app-main {
+  min-height: 100vh;
 }
 
 .app-header {
@@ -54,6 +75,9 @@
 
 .app-content {
   padding: 20px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .page-header {
@@ -88,6 +112,20 @@
   border-radius: 12px;
 }
 
+.data-table .ant-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.data-table .ant-table-container {
+  flex: 1;
+}
+
+.data-table .ant-table-pagination {
+  margin-top: auto;
+}
+
 .data-table .ant-table-thead > tr > th {
   background: #f8fafc;
   font-weight: 600;
@@ -96,6 +134,25 @@
 
 .action-buttons .ant-btn {
   padding: 0;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100%;
+}
+
+.table-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.table-card .ant-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .login-page {

@@ -20,7 +20,8 @@ function TimeDataPage({ currentUser }) {
     const [timeDataList, setTimeDataList] = useState([]);   // 时间数据完整列表
     const [filterPhone, setFilterPhone] = useState('');     // 筛选：手机号
     const [filterMac, setFilterMac] = useState('');         // 筛选：MAC地址
-    const [filterStart, setFilterStart] = useState('');     // 筛选：开始时间字符串（含日期）
+    const [filterStart, setFilterStart] = useState('');     // 筛选：开始时间字符串（日期模糊）
+    const [filterStartDate, setFilterStartDate] = useState(null); // 筛选：开始时间选择器值
     const [editingRecord, setEditingRecord] = useState(null);  // 当前正在编辑的记录
     const [newAccount, setNewAccount] = useState('');          // 编辑表单：新的记录者账号
     const [newStartTime, setNewStartTime] = useState(null);    // 编辑表单：新的开始时间 (dayjs 对象)
@@ -49,7 +50,7 @@ function TimeDataPage({ currentUser }) {
     const filteredList = timeDataList.filter(item => {
         const phoneMatch = item.timeDataPK.subjectPhone.includes(filterPhone);
         const macMatch = item.timeDataPK.glassesMac.includes(filterMac);
-        const startStr = item.startTime ? String(item.startTime) : '';
+        const startStr = item.startTime ? String(item.startTime).replace('T', ' ') : '';
         const startMatch = startStr.includes(filterStart);
         return phoneMatch && macMatch && startMatch;
     });
@@ -82,14 +83,18 @@ function TimeDataPage({ currentUser }) {
             message.error("账号必须为11位数字");
             return;
         }
-        if (newDuration === null || newDuration === undefined || newDuration < 0) {
-            message.error("持续时间必须是非负整数");
+        if (!Number.isInteger(newDuration) || newDuration <= 0) {
+            message.error("持续时间必须是正整数");
+            return;
+        }
+        if (!newStartTime) {
+            message.error("请选择开始时间");
             return;
         }
         // 准备请求体数据
         const payload = {
             username: newAccount,
-            startTime: newStartTime ? newStartTime.format("YYYY-MM-DD'T'HH:mm:ss") : null,
+            startTime: newStartTime.format("YYYY-MM-DD'T'HH:mm:ss"),
             duration: newDuration,
         };
         const { subjectPhone, glassesMac } = editingRecord.timeDataPK;
@@ -109,7 +114,7 @@ function TimeDataPage({ currentUser }) {
                         return {
                             ...item,
                             username: newAccount,
-                            startTime: newStartTime ? newStartTime.format("YYYY-MM-DDTHH:mm:ss") : item.startTime,
+                            startTime: newStartTime.format("YYYY-MM-DDTHH:mm:ss"),
                             duration: newDuration,
                         };
                     }
@@ -151,7 +156,12 @@ function TimeDataPage({ currentUser }) {
         { title: '受试者手机', dataIndex: ['timeDataPK', 'subjectPhone'], key: 'subjectPhone' },
         { title: '眼镜MAC', dataIndex: ['timeDataPK', 'glassesMac'], key: 'glassesMac' },
         { title: '记录者账号', dataIndex: 'username', key: 'username' },
-        { title: '开始时间', dataIndex: 'startTime', key: 'startTime' },
+        {
+            title: '开始时间',
+            dataIndex: 'startTime',
+            key: 'startTime',
+            render: (value) => (value ? String(value).replace('T', ' ') : ''),
+        },
         { title: '持续(秒)', dataIndex: 'duration', key: 'duration' },
         {
             title: '操作',
@@ -178,11 +188,10 @@ function TimeDataPage({ currentUser }) {
     ];
 
     return (
-        <div className="time-data-page">
+        <div className="time-data-page page-container">
             <div className="page-header">
                 <div>
-                    <div className="page-title">量表数据</div>
-                    <div className="page-subtitle">时间数据 / 列表</div>
+                    <div className="page-title">时间数据</div>
                 </div>
             </div>
             <Card className="filter-card" bordered={false}>
@@ -211,18 +220,19 @@ function TimeDataPage({ currentUser }) {
                         <Col xs={24} md={8}>
                             <Form.Item label="开始时间">
                                 <DatePicker
-                                    showTime={{ format: 'HH:mm' }}
-                                    placeholder="请选择开始时间"
-                                    value={filterStart ? dayjs(filterStart) : null}
-                                    format="YYYY-MM-DD HH:mm"
+                                    placeholder="请选择开始日期"
+                                    value={filterStartDate}
+                                    format="YYYY-MM-DD"
                                     allowClear
                                     style={{ width: '100%' }}
                                     onChange={(value) => {
                                         if (value) {
-                                            const str = value.format("YYYY-MM-DD'T'HH:mm");
+                                            const str = value.format("YYYY-MM-DD");
                                             setFilterStart(str);
+                                            setFilterStartDate(value);
                                         } else {
                                             setFilterStart('');
+                                            setFilterStartDate(null);
                                         }
                                     }}
                                 />
@@ -231,7 +241,7 @@ function TimeDataPage({ currentUser }) {
                     </Row>
                 </Form>
             </Card>
-            <Card bordered={false}>
+            <Card className="table-card" bordered={false}>
                 <Table
                     className="data-table"
                     columns={columns}
@@ -244,7 +254,7 @@ function TimeDataPage({ currentUser }) {
             {editingRecord && (
                 <Modal
                     title="修改记录"
-                    visible={!!editingRecord}
+                    open={!!editingRecord}
                     onOk={submitEdit}
                     onCancel={cancelEdit}
                     okText="提交"
@@ -266,7 +276,7 @@ function TimeDataPage({ currentUser }) {
                     <div style={{ marginBottom: 8 }}>
                         <b>开始时间:</b>{' '}
                         <DatePicker
-                            showTime
+                            showTime={{ format: 'HH:mm:ss' }}
                             value={newStartTime}
                             onChange={(val) => setNewStartTime(val)}
                             format="YYYY-MM-DD HH:mm:ss"
@@ -276,8 +286,9 @@ function TimeDataPage({ currentUser }) {
                         <b>持续时间(秒):</b>{' '}
                         <InputNumber
                             value={newDuration}
-                            min={0}
+                            min={1}
                             step={1}
+                            precision={0}
                             onChange={(value) => setNewDuration(value)}
                         />
                     </div>

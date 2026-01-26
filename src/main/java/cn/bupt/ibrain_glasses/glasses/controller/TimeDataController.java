@@ -98,14 +98,14 @@ public class TimeDataController {
         if (dto.getUsername() != null) {
             User user = userService.getById(dto.getUsername());
             if (user == null) {
-                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "指定的账号不存在");
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "账号不存在");
             }
             record.setUsername(dto.getUsername());
         }
         // 如提供新的持续时间，则校验非负整数并更新
         if (dto.getDuration() != null) {
-            if (dto.getDuration() < 0) {
-                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "持续时间不能为负数");
+            if (dto.getDuration() <= 0) {
+                return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "持续时间必须为正整数");
             }
             record.setDuration(dto.getDuration());
         }

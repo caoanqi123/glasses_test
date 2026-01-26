@@ -124,7 +124,7 @@ public class UserController {
                     .filter(u -> currentUser.getOrganizationId().equals(u.getOrganizationId()))
                     .collect(Collectors.toList());
         } else {
-            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限查看用户列表");
+            users = Collections.singletonList(currentUser); // 个人用户仅查看自己
         }
         // 将组织名称附加到每个用户的数据中
         List<Organization> orgs = organizationService.list();
