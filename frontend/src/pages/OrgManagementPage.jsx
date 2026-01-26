@@ -154,11 +154,6 @@ function OrgManagementPage({ currentUser }) {
 
     return (
         <div className="org-management-page page-container">
-            <div className="page-header">
-                <div>
-                    <div className="page-title">组织管理</div>
-                </div>
-            </div>
             <div style={{ marginBottom: 12 }}>
                 <Button type="primary" onClick={openCreateOrg}>
                     新增组织

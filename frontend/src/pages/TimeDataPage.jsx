@@ -189,11 +189,6 @@ function TimeDataPage({ currentUser }) {
 
     return (
         <div className="time-data-page page-container">
-            <div className="page-header">
-                <div>
-                    <div className="page-title">时间数据</div>
-                </div>
-            </div>
             <Card className="filter-card" bordered={false}>
                 <Form layout="inline" className="filter-form">
                     <Row gutter={[16, 12]} style={{ width: '100%' }}>

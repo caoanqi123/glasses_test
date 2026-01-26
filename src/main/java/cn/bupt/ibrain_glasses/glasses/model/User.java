@@ -27,4 +27,7 @@ public class User implements Serializable {
 
     @TableField("organization_id")
     private String organizationId;
+
+    @TableField("first_login")
+    private Boolean firstLogin;
 }

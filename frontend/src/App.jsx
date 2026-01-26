@@ -62,6 +62,12 @@ function App() {
         ...(isOrgAdmin || isSysAdmin ? [{ key: 'userManage', icon: <UserOutlined />, label: '用户管理' }] : []),
     ];
 
+    const pageTitleMap = {
+        timeData: '时间数据管理',
+        orgManage: '组织管理',
+        userManage: '用户管理',
+    };
+
     return (
         <Layout className="app-layout">
             {/* 左侧侧边栏菜单 */}
@@ -78,7 +84,6 @@ function App() {
                     items={menuItems}
                 />
                 <div className="sider-footer">
-                    <div className="sider-user">当前用户：{name || currentUser.username}</div>
                     <Button type="primary" ghost size="small" onClick={handleLogout}>
                         退出登录
                     </Button>
@@ -87,7 +92,7 @@ function App() {
             {/* 右侧主内容区 */}
             <Layout className="app-main">
                 <Header className="app-header">
-                    <div className="header-title">眼镜数据管理系统</div>
+                    <div className="header-title">{pageTitleMap[currentPage]}</div>
                     <div className="header-user">
                         <span>{name || currentUser.username}</span>
                         <Avatar style={{ backgroundColor: '#3b82f6' }}>

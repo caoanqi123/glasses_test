@@ -210,7 +210,7 @@ function UserManagementPage({ currentUser }) {
             });
             const data = await res.json();
             if (!data.success) {
-                message.error(data.message || "新增失败");
+                message.error(data.message || "注册失败");
             } else {
                 const orgName = orgOptions.find(org => org.organizationId === createOrgId)?.organizationName || '';
                 setUserList(prev => ([
@@ -223,12 +223,12 @@ function UserManagementPage({ currentUser }) {
                         organizationName: orgName,
                     },
                 ]));
-                message.success("用户已新增");
+                message.success(data.message || "注册成功");
                 cancelCreateUser();
             }
         } catch (err) {
             console.error("Create user failed:", err);
-            message.error("新增请求失败");
+            message.error("注册请求失败");
         }
     };
 
@@ -271,15 +271,10 @@ function UserManagementPage({ currentUser }) {
 
     return (
         <div className="user-management-page page-container">
-            <div className="page-header">
-                <div>
-                    <div className="page-title">用户管理</div>
-                </div>
-            </div>
             {currentUser.authorityType !== '个人' && (
                 <div style={{ marginBottom: 12 }}>
                     <Button type="primary" onClick={openCreateUser}>
-                        新增用户
+                        注册
                     </Button>
                 </div>
             )}

@@ -1,7 +1,11 @@
-import React from 'react';
-import { Form, Input, Button, message } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, message, Modal } from 'antd';
 
 function LoginPage({ onLoginSuccess }) {
+    const [showFirstLogin, setShowFirstLogin] = useState(false);
+    const [pendingUser, setPendingUser] = useState(null);
+    const [newPassword, setNewPassword] = useState('');
+
     // 表单提交成功时触发
     const handleFinish = async ({ username, password }) => {
         try {
@@ -27,15 +31,50 @@ function LoginPage({ onLoginSuccess }) {
             } else {
                 // 登录成功，保存登录信息到 localStorage，并通知父组件
                 const user = data.data;
-                localStorage.setItem('username', user.username);
-                localStorage.setItem('name', user.name || '');
-                localStorage.setItem('authorityType', user.authorityType);
-                onLoginSuccess(user);
-                message.success("登录成功");
+                if (user.firstLogin) {
+                    setPendingUser(user);
+                    setShowFirstLogin(true);
+                } else {
+                    localStorage.setItem('username', user.username);
+                    localStorage.setItem('name', user.name || '');
+                    localStorage.setItem('authorityType', user.authorityType);
+                    onLoginSuccess(user);
+                    message.success("登录成功");
+                }
             }
         } catch (error) {
             console.error("Login request failed:", error);
             message.error("登录请求失败，请检查网络");
+        }
+    };
+
+    const submitFirstLoginPassword = async () => {
+        if (!newPassword || newPassword.length < 8) {
+            message.error("新密码长度不能少于8位");
+            return;
+        }
+        try {
+            const res = await fetch(`/users/${encodeURIComponent(pendingUser.username)}/password?currentUsername=${pendingUser.username}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newPassword }),
+            });
+            const data = await res.json();
+            if (!data.success) {
+                message.error(data.message || "修改密码失败");
+                return;
+            }
+            localStorage.setItem('username', pendingUser.username);
+            localStorage.setItem('name', pendingUser.name || '');
+            localStorage.setItem('authorityType', pendingUser.authorityType);
+            onLoginSuccess(pendingUser);
+            setShowFirstLogin(false);
+            setPendingUser(null);
+            setNewPassword('');
+            message.success("密码修改成功，登录成功");
+        } catch (error) {
+            console.error("Update password failed:", error);
+            message.error("修改密码请求失败");
         }
     };
 
@@ -72,6 +111,24 @@ function LoginPage({ onLoginSuccess }) {
                     </Form.Item>
                 </Form>
             </div>
+            <Modal
+                title="首次登录请修改密码"
+                open={showFirstLogin}
+                onOk={submitFirstLoginPassword}
+                onCancel={() => {}}
+                okText="提交"
+                cancelButtonProps={{ style: { display: 'none' } }}
+            >
+                <Form layout="vertical">
+                    <Form.Item label="新密码">
+                        <Input.Password
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="至少8位密码"
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 }

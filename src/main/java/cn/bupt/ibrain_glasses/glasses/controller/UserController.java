@@ -48,7 +48,7 @@ public class UserController {
             return ApiResponse.createResponse(HttpStatus.UNAUTHORIZED.value(), "账号或密码错误");
         }
         // 登录成功，不返回密码，只返回必要信息
-        LoginResp data = new LoginResp(user.getUsername(), user.getName(), user.getAuthorityType());
+        LoginResp data = new LoginResp(user.getUsername(), user.getName(), user.getAuthorityType(), Boolean.TRUE.equals(user.getFirstLogin()));
         return ApiResponse.createResponse(HttpStatus.OK.value(), "登录成功", data);
     }
 
@@ -101,6 +101,7 @@ public class UserController {
         user.setName(name);
         user.setAuthorityType(authority);
         user.setOrganizationId(orgId);
+        user.setFirstLogin(false);
         userService.save(user);
         return ApiResponse.createResponse(HttpStatus.OK.value(), "注册成功");
     }
@@ -161,7 +162,7 @@ public class UserController {
             }
             orgId = "";
         }
-        String defaultPassword = "12345678";
+        String defaultPassword = "ok123456";
         String encodedPwd = encoder.encode(defaultPassword);
         User user = new User();
         user.setUsername(dto.getUsername());
@@ -169,8 +170,9 @@ public class UserController {
         user.setAuthorityType(newAuth);
         user.setOrganizationId(orgId);
         user.setPassword(encodedPwd);
+        user.setFirstLogin(true);
         userService.save(user);
-        return ApiResponse.createResponse(HttpStatus.OK.value(), "用户创建成功");
+        return ApiResponse.createResponse(HttpStatus.OK.value(), "注册成功，初始密码为ok123456");
     }
 
     /**
@@ -337,19 +339,42 @@ public class UserController {
         return ApiResponse.createResponse(HttpStatus.OK.value(), "用户已删除");
     }
 
+    @PutMapping("/{username}/password")
+    public ResponseEntity<ApiResponse> updatePassword(@PathVariable String username,
+                                                      @RequestParam String currentUsername,
+                                                      @RequestBody UpdatePasswordDto dto) {
+        if (!Objects.equals(username, currentUsername)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+        }
+        if (dto.getNewPassword() == null || dto.getNewPassword().length() < 8) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "新密码长度至少8位");
+        }
+        User user = userService.getById(username);
+        if (user == null) {
+            return ApiResponse.createResponse(HttpStatus.NOT_FOUND.value(), "用户不存在");
+        }
+        user.setPassword(encoder.encode(dto.getNewPassword()));
+        user.setFirstLogin(false);
+        userService.updateById(user);
+        return ApiResponse.createResponse(HttpStatus.OK.value(), "密码修改成功");
+    }
+
     // 静态内部类：定义登录接口返回的数据结构
     static class LoginResp {
         private String username;
         private String name;
         private String authorityType;
-        public LoginResp(String username, String name, String authorityType) {
+        private boolean firstLogin;
+        public LoginResp(String username, String name, String authorityType, boolean firstLogin) {
             this.username = username;
             this.name = name;
             this.authorityType = authorityType;
+            this.firstLogin = firstLogin;
         }
         public String getUsername() { return username; }
         public String getName() { return name; }
         public String getAuthorityType() { return authorityType; }
+        public boolean isFirstLogin() { return firstLogin; }
     }
 
     // DTO 类：用于更新用户接口接收的数据
@@ -378,5 +403,11 @@ public class UserController {
         public void setAuthorityType(String authorityType) { this.authorityType = authorityType; }
         public String getOrganizationId() { return organizationId; }
         public void setOrganizationId(String organizationId) { this.organizationId = organizationId; }
+    }
+
+    static class UpdatePasswordDto {
+        private String newPassword;
+        public String getNewPassword() { return newPassword; }
+        public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
     }
 }
