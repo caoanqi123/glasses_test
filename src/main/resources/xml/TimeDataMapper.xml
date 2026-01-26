@@ -3,8 +3,8 @@
 <mapper namespace="cn.bupt.ibrain_glasses.glasses.mapper.TimeDataMapper">
 
     <resultMap id="BaseResultMap" type="cn.bupt.ibrain_glasses.glasses.model.TimeData">
-        <id property="timeDataPK.subjectPhone" column="subject_phone" jdbcType="CHAR"/>
-        <id property="timeDataPK.glassesMac" column="glasses_mac" jdbcType="CHAR"/>
+        <id property="subjectPhone" column="subject_phone" jdbcType="CHAR"/>
+        <id property="glassesMac" column="glasses_mac" jdbcType="CHAR"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="duration" column="duration" jdbcType="INTEGER"/>
@@ -16,7 +16,7 @@
 
     <insert id="insertTimeData" parameterType="cn.bupt.ibrain_glasses.glasses.model.TimeData">
         insert into time_data (subject_phone, glasses_mac, username, start_time, duration)
-        values (#{timeData.timeDataPK.subjectPhone}, #{timeData.timeDataPK.glassesMac},
-        #{timeData.username}, #{timeData.startTime}, #{timeData.duration})
+        values (#{timeData.subjectPhone}, #{timeData.glassesMac},
+                #{timeData.username}, #{timeData.startTime}, #{timeData.duration})
     </insert>
 </mapper>

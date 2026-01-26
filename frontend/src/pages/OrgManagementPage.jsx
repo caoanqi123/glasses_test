@@ -1,42 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import { Table, message } from 'antd';
 
 function OrgManagementPage() {
     const [orgList, setOrgList] = useState([]);
 
     useEffect(() => {
-        // 获取组织列表
         const fetchOrgs = async () => {
             try {
-                const res = await fetch('/api/organizations');
+                const res = await fetch('/organizations');
                 const data = await res.json();
-                if (data.success === false) {
-                    alert(data.message || "无法获取组织列表");
+                if (!data.success) {
+                    message.error(data.message || "无法获取组织列表");
                 } else {
-                    setOrgList(data);
+                    setOrgList(data.data);
                 }
             } catch (err) {
                 console.error("Failed to fetch organizations:", err);
+                message.error("获取组织列表失败");
             }
         };
         fetchOrgs();
     }, []);
 
+    const columns = [
+        { title: '组织ID', dataIndex: 'organizationId', key: 'organizationId' },
+        { title: '组织名称', dataIndex: 'organizationName', key: 'organizationName' },
+    ];
+
     return (
         <div className="org-management-page">
             <h2>组织列表</h2>
-            <table className="data-table">
-                <thead>
-                <tr><th>组织ID</th><th>组织名称</th></tr>
-                </thead>
-                <tbody>
-                {orgList.map(org => (
-                    <tr key={org.organizationId}>
-                        <td>{org.organizationId}</td>
-                        <td>{org.organizationName}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <Table
+                className="data-table"
+                columns={columns}
+                dataSource={orgList}
+                rowKey="organizationId"
+                pagination={false}
+            />
         </div>
     );
 }

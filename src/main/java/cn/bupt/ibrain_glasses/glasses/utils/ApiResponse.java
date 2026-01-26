@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 @Data
 public class ApiResponse {
-
+    private boolean success;
     private String message;
     private Object data;
 
@@ -20,12 +20,14 @@ public class ApiResponse {
     }
 
     public static ResponseEntity<ApiResponse> createResponse(int status, String message) {
-        return ResponseEntity.status(status).body(new ApiResponse(message));
+        ApiResponse resp = new ApiResponse(message);
+        resp.setSuccess(status >= 200 && status < 300);
+        return ResponseEntity.status(status).body(resp);
     }
 
     public static ResponseEntity<ApiResponse> createResponse(int status, String message, Object data) {
-        return ResponseEntity.status(status).body(new ApiResponse(message, data));
+        ApiResponse resp = new ApiResponse(message, data);
+        resp.setSuccess(status >= 200 && status < 300);
+        return ResponseEntity.status(status).body(resp);
     }
-
-
 }

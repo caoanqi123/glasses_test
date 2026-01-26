@@ -3,8 +3,8 @@
 <mapper namespace="cn.bupt.ibrain_glasses.glasses.mapper.OrgDataShareMapper">
 
     <resultMap id="BaseResultMap" type="cn.bupt.ibrain_glasses.glasses.model.OrgDataShare">
-        <id property="orgDataSharePK.ownerOrganizationId" column="owner_organization_id" jdbcType="CHAR"/>
-        <id property="orgDataSharePK.granteeUsername" column="grantee_username" jdbcType="VARCHAR"/>
+        <id property="ownerOrganizationId" column="owner_organization_id" jdbcType="CHAR"/>
+        <id property="granteeUsername" column="grantee_username" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

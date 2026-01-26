@@ -3,3 +3,11 @@
 2026-01-26 04:20:06.076 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.TimeData".
 2026-01-26 04:20:06.076 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.TimeData ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
 2026-01-26 04:38:13.124 [http-nio-8083-exec-1] WARN  o.s.security.crypto.bcrypt.BCryptPasswordEncoder - Encoded password does not look like BCrypt
+2026-01-26 12:03:42.823 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.OrgDataShare".
+2026-01-26 12:03:42.827 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.OrgDataShare ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-01-26 12:03:42.903 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.TimeData".
+2026-01-26 12:03:42.903 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.TimeData ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-01-26 12:27:28.301 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.OrgDataShare".
+2026-01-26 12:27:28.304 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.OrgDataShare ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.
+2026-01-26 12:27:28.437 [main] WARN  c.b.mybatisplus.core.metadata.TableInfoHelper - Can not find table primary key in Class: "cn.bupt.ibrain_glasses.glasses.model.TimeData".
+2026-01-26 12:27:28.437 [main] WARN  c.b.mybatisplus.core.injector.DefaultSqlInjector - class cn.bupt.ibrain_glasses.glasses.model.TimeData ,Not found @TableId annotation, Cannot use Mybatis-Plus 'xxById' Method.

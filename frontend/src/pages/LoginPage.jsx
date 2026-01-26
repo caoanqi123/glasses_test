@@ -1,70 +1,72 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Form, Input, Button, message } from 'antd';
 
 function LoginPage({ onLoginSuccess }) {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleLogin = async () => {
-        // 前端验证账号和密码格式
-        if (!/^\d{11}$/.test(username)) {
-            alert("账号必须为11位数字");
-            return;
-        }
-        if (password.length < 8) {
-            alert("密码长度不能少于8位");
-            return;
-        }
+    // 表单提交成功时触发
+    const handleFinish = async ({ username, password }) => {
         try {
+            // 前端再次校验账号和密码格式
+            if (!/^\d{11}$/.test(username)) {
+                message.error("账号必须为11位数字");
+                return;
+            }
+            if (password.length < 8) {
+                message.error("密码长度不能少于8位");
+                return;
+            }
             // 调用后端登录接口
-            const res = await fetch('/api/login', {
+            const res = await fetch('/users/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ username, password })
+                body: new URLSearchParams({ username, password }).toString()
             });
             const data = await res.json();
-            if (data.success === false) {
+            if (!data.success) {
                 // 登录失败，提示错误信息
-                alert(data.message || "登录失败");
+                message.error(data.message || "登录失败");
             } else {
-                // 登录成功，保存登录状态到 localStorage，并通知上层组件
-                localStorage.setItem('username', data.username);
-                localStorage.setItem('name', data.name);
-                localStorage.setItem('authorityType', data.authorityType);
-                onLoginSuccess({
-                    username: data.username,
-                    name: data.name,
-                    authorityType: data.authorityType
-                });
+                // 登录成功，保存登录信息到 localStorage，并通知父组件
+                const user = data.data;
+                localStorage.setItem('username', user.username);
+                localStorage.setItem('name', user.name || '');
+                localStorage.setItem('authorityType', user.authorityType);
+                onLoginSuccess(user);
+                message.success("登录成功");
             }
         } catch (error) {
             console.error("Login request failed:", error);
-            alert("登录请求失败，请检查网络");
+            message.error("登录请求失败，请检查网络");
         }
     };
 
     return (
-        <div className="login-page">
+        <div className="login-page" style={{ maxWidth: 300, margin: '100px auto', textAlign: 'center' }}>
             <h2>用户登录</h2>
-            <div>
-                <label>账号：</label>
-                <input
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    placeholder="11位手机号"
-                    maxLength={11}
-                />
-            </div>
-            <div>
-                <label>密码：</label>
-                <input
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="至少8位密码"
-                />
-            </div>
-            <button onClick={handleLogin}>登录</button>
+            <Form onFinish={handleFinish}>
+                <Form.Item
+                    name="username"
+                    rules={[
+                        { required: true, message: '请输入账号' },
+                        { pattern: /^\d{11}$/, message: '账号必须为11位数字' }
+                    ]}
+                >
+                    <Input placeholder="11位手机号" maxLength={11} allowClear />
+                </Form.Item>
+                <Form.Item
+                    name="password"
+                    rules={[
+                        { required: true, message: '请输入密码' },
+                        { min: 8, message: '密码长度不能少于8位' }
+                    ]}
+                >
+                    <Input.Password placeholder="至少8位密码" />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                        登录
+                    </Button>
+                </Form.Item>
+            </Form>
         </div>
     );
 }

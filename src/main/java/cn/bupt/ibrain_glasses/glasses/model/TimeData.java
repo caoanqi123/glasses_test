@@ -13,7 +13,11 @@ public class TimeData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private TimeDataPK timeDataPK;
+    @TableField("subject_phone")
+    private String subjectPhone;
+
+    @TableField("glasses_mac")
+    private String glassesMac;
 
     @TableField("username")
     private String username;
@@ -24,17 +28,23 @@ public class TimeData implements Serializable {
     @TableField("duration")
     private Integer duration;
 
-    public TimeData(TimeDataPK timeDataPK) {
-        this.timeDataPK = timeDataPK;
-    }
+    // 复合主键对象不是表字段，必须 exist=false，否则会生成 time_data_p_k
+    @TableField(exist = false)
+    private TimeDataPK timeDataPK;
 
-    public TimeData() {}
-
+    // 保持旧 JSON 结构：前端仍然可以用 timeDataPK.subjectPhone / glassesMac
     public TimeDataPK getTimeDataPK() {
+        if (timeDataPK == null) {
+            timeDataPK = new TimeDataPK(subjectPhone, glassesMac);
+        }
         return timeDataPK;
     }
 
-    public void setTimeDataPK(TimeDataPK timeDataPK) {
-        this.timeDataPK = timeDataPK;
+    public void setTimeDataPK(TimeDataPK pk) {
+        this.timeDataPK = pk;
+        if (pk != null) {
+            this.subjectPhone = pk.getSubjectPhone();
+            this.glassesMac = pk.getGlassesMac();
+        }
     }
 }

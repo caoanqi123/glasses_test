@@ -453,3 +453,375 @@
 2026-01-26 04:47:53.160 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
 2026-01-26 04:47:53.160 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
 2026-01-26 04:47:53.160 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:03:42.253 [main] DEBUG org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2026-01-26 12:13:58.285 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:13:58.285 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:13:58.310 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:58.310 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:58.361 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:13:58.361 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:13:58.862 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:13:58.862 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:13:58.863 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:58.863 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:58.866 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:13:58.866 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:13:59.034 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:13:59.034 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:13:59.035 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:13:59.035 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:13:59.039 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:13:59.039 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:13:59.073 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:13:59.073 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:13:59.074 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:59.074 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:59.276 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:13:59.276 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:13:59.277 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:59.277 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:59.279 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:13:59.279 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:13:59.281 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:13:59.281 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:13:59.281 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:13:59.281 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:13:59.284 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:13:59.284 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:13:59.287 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:13:59.287 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:13:59.287 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:13:59.287 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:12.649 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:12.649 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:12.650 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:12.650 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:12.654 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:12.654 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:12.675 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:12.675 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:12.675 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:12.675 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:12.677 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:12.677 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.743 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.743 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:13.743 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.743 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:13.743 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:13.743 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.743 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:13.743 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.745 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:13.745 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:13.746 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:13.746 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:13.746 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.746 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.749 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:13.749 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:13.749 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.749 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.749 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.749 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.749 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.749 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.750 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.750 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.757 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.757 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.757 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.757 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.758 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.758 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.766 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:13.766 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:13.767 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:13.767 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:13.768 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:13.768 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:13.768 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:13.768 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:13.770 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.770 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.771 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:13.771 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:13.772 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.772 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:13.772 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.772 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:13.773 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:13.773 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:22.001 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:22.001 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:22.001 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.001 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.007 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:22.007 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:22.018 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:22.018 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:14:22.018 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.018 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.022 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:22.022 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:14:22.719 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:22.719 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:22.720 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:22.720 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:22.721 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:22.721 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:22.722 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:22.722 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:22.723 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.723 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.725 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:22.725 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:22.725 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:22.725 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:22.725 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:22.725 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:22.738 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:22.738 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:22.738 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:22.738 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:22.740 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:22.740 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:22.740 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:22.740 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:22.741 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.741 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:22.742 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:22.742 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:22.744 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:22.744 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:22.744 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:22.744 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.475 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:31.475 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:31.475 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.475 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.477 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:31.477 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:31.477 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:31.477 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:31.478 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:31.478 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:31.479 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:31.479 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:31.480 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:31.480 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:31.480 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.480 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.495 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:31.495 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:14:31.496 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.496 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.498 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:31.498 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:14:31.498 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:31.498 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:14:31.499 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:31.499 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:14:31.499 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:31.499 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:14:31.501 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:31.501 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT org_data_share_p_k FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:14:31.501 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:14:31.501 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:27.733 [main] DEBUG org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2026-01-26 12:27:33.476 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:33.476 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:33.497 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:33.497 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:33.551 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:33.551 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:33.634 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:33.634 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:33.635 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:33.635 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:33.638 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:33.638 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:34.809 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:34.809 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:34.810 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.810 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.820 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:34.820 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:34.822 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:34.822 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:34.822 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:34.822 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:34.824 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:34.824 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:34.835 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:34.835 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:34.836 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.836 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.842 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:34.842 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:34.847 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:34.847 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:34.848 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:34.848 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:34.855 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:34.855 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:34.869 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:34.869 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:34.869 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.869 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.871 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:34.871 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:34.872 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:34.872 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:34.872 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:34.872 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:34.874 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:34.874 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:34.875 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:34.875 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:34.875 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.875 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:34.876 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:34.876 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:34.876 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:34.876 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:34.877 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:34.877 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:34.878 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:34.878 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:46.048 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:46.048 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:46.048 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:46.048 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:46.049 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:46.049 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:46.060 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:46.060 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:46.060 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:46.060 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:46.061 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:46.061 [http-nio-8083-exec-6] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:47.348 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:47.348 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:47.349 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.349 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.351 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:47.351 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:47.352 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:47.352 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:47.353 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:47.353 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:47.354 [http-nio-8083-exec-2] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:47.376 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:47.376 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:47.376 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.376 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.378 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:47.378 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:47.378 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:47.378 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:47.379 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:47.379 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:47.379 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:47.379 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:47.380 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:47.380 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==>  Preparing: SELECT owner_organization_id,grantee_username FROM org_data_share WHERE (grantee_username = ?)
+2026-01-26 12:27:47.380 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.380 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:47.381 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:47.381 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.OrgDataShareMapper.selectList - <==      Total: 0
+2026-01-26 12:27:47.383 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:47.383 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==>  Preparing: SELECT subject_phone,glasses_mac,username,start_time,duration FROM time_data WHERE (username IN (?,?))
+2026-01-26 12:27:47.383 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:47.383 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - ==> Parameters: 11111111111(String), 18459898778(String)
+2026-01-26 12:27:47.384 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:47.384 [http-nio-8083-exec-8] DEBUG c.b.i.glasses.mapper.TimeDataMapper.selectList - <==      Total: 3
+2026-01-26 12:27:48.916 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:48.916 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:48.917 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:48.917 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:48.918 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:48.918 [http-nio-8083-exec-9] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:48.925 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:48.925 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:48.926 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:48.926 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:48.926 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:48.926 [http-nio-8083-exec-10] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.150 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.150 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.151 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.151 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.152 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:55.152 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:55.153 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.153 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:55.153 [http-nio-8083-exec-1] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.153 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:55.157 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:55.157 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:55.159 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:55.159 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:55.159 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.159 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.159 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.159 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.159 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.159 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.160 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:55.160 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:55.160 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.160 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.160 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.160 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.160 [http-nio-8083-exec-3] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.160 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.161 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.161 [http-nio-8083-exec-4] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.174 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:55.174 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:27:55.175 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:55.175 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:27:55.176 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:55.176 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:27:55.177 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:55.177 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user`
+2026-01-26 12:27:55.177 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.177 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.178 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:55.178 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.UserMapper.selectList - <==      Total: 2
+2026-01-26 12:27:55.178 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.178 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==>  Preparing: SELECT organization_id,organization_name FROM organization
+2026-01-26 12:27:55.178 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.178 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - ==> Parameters: 
+2026-01-26 12:27:55.179 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:27:55.179 [http-nio-8083-exec-7] DEBUG c.b.i.glasses.mapper.OrganizationMapper.selectList - <==      Total: 1
+2026-01-26 12:28:18.555 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:28:18.555 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:28:18.555 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:28:18.555 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 11111111111(String)
+2026-01-26 12:28:18.556 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:28:18.556 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:28:18.557 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:28:18.557 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==>  Preparing: SELECT username,password,name,authority_type,organization_id FROM `user` WHERE username=?
+2026-01-26 12:28:18.557 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 18459898778(String)
+2026-01-26 12:28:18.557 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - ==> Parameters: 18459898778(String)
+2026-01-26 12:28:18.558 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:28:18.558 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.selectById - <==      Total: 1
+2026-01-26 12:28:18.563 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.deleteById - ==>  Preparing: DELETE FROM `user` WHERE username=?
+2026-01-26 12:28:18.563 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.deleteById - ==>  Preparing: DELETE FROM `user` WHERE username=?
+2026-01-26 12:28:18.563 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.deleteById - ==> Parameters: 18459898778(String)
+2026-01-26 12:28:18.563 [http-nio-8083-exec-5] DEBUG c.b.i.glasses.mapper.UserMapper.deleteById - ==> Parameters: 18459898778(String)

@@ -18,9 +18,8 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/time-data")
+@RequestMapping("/time-data")
 public class TimeDataController {
-
     private final TimeDataService timeDataService;
     private final UserService userService;
     private final OrgDataShareService orgDataShareService;
@@ -34,21 +33,18 @@ public class TimeDataController {
     }
 
     /**
-     * 获取当前用户有权限查看的 time_data 列表（统一响应体）
+     * 获取当前用户有权限查看的 TimeData 列表
      */
     @GetMapping
     public ResponseEntity<ApiResponse> listTimeData(@RequestParam String username) {
-
         User currentUser = userService.getById(username);
         if (currentUser == null) {
             return ApiResponse.createResponse(HttpStatus.UNAUTHORIZED.value(), "未授权的访问");
         }
-
         String authType = currentUser.getAuthorityType();
         String orgId = currentUser.getOrganizationId();
-
-        Set<String> allowedUsernames = new HashSet<String>();
-
+        // 根据权限确定可查看的用户名集合
+        Set<String> allowedUsernames = new HashSet<>();
         if ("个人".equals(authType)) {
             allowedUsernames.add(currentUser.getUsername());
         } else if ("组织".equals(authType) && orgId != null) {
@@ -63,8 +59,7 @@ public class TimeDataController {
                 allowedUsernames.add(u.getUsername());
             }
         }
-
-        // 授权组织共享数据
+        // 添加授权共享的其他组织数据用户名
         List<OrgDataShare> shares = orgDataShareService.list(
                 new QueryWrapper<OrgDataShare>().eq("grantee_username", currentUser.getUsername()));
         for (OrgDataShare share : shares) {
@@ -75,34 +70,31 @@ public class TimeDataController {
                 allowedUsernames.add(u.getUsername());
             }
         }
-
         if (allowedUsernames.isEmpty()) {
             return ApiResponse.createResponse(HttpStatus.OK.value(), "查询成功", Collections.emptyList());
         }
-
+        // 查询所有 username 属于 allowedUsernames 集合的时间数据
         List<TimeData> results = timeDataService.list(
                 new QueryWrapper<TimeData>().in("username", allowedUsernames));
-
         return ApiResponse.createResponse(HttpStatus.OK.value(), "查询成功", results);
     }
 
     /**
-     * 修改 time_data
+     * 修改 TimeData 记录
      */
     @PutMapping("/{subjectPhone}/{glassesMac}")
     public ResponseEntity<ApiResponse> updateTimeData(@PathVariable String subjectPhone,
                                                       @PathVariable String glassesMac,
                                                       @RequestBody UpdateTimeDataDto dto) {
-
+        // 根据复合主键定位记录
         QueryWrapper<TimeData> query = new QueryWrapper<TimeData>()
                 .eq("subject_phone", subjectPhone)
                 .eq("glasses_mac", glassesMac);
         TimeData record = timeDataService.getOne(query);
-
         if (record == null) {
             return ApiResponse.createResponse(HttpStatus.NOT_FOUND.value(), "记录不存在");
         }
-
+        // 如提供新的账号，则校验其存在性并更新
         if (dto.getUsername() != null) {
             User user = userService.getById(dto.getUsername());
             if (user == null) {
@@ -110,22 +102,24 @@ public class TimeDataController {
             }
             record.setUsername(dto.getUsername());
         }
-
+        // 如提供新的持续时间，则校验非负整数并更新
         if (dto.getDuration() != null) {
             if (dto.getDuration() < 0) {
                 return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "持续时间不能为负数");
             }
             record.setDuration(dto.getDuration());
         }
-
+        // 如提供新的开始时间，则校验格式并更新
         if (dto.getStartTime() != null) {
             LocalDateTime newStart;
             try {
                 String startStr = dto.getStartTime();
                 if (startStr.length() <= 16) {
+                    // 格式：yyyy-MM-dd'T'HH:mm
                     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
                     newStart = LocalDateTime.parse(startStr, fmt);
                 } else {
+                    // 格式：yyyy-MM-dd'T'HH:mm:ss
                     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
                     newStart = LocalDateTime.parse(startStr, fmt);
                 }
@@ -134,33 +128,52 @@ public class TimeDataController {
             }
             record.setStartTime(newStart);
         }
-
+        // 执行更新
         timeDataService.update(record, query);
         return ApiResponse.createResponse(HttpStatus.OK.value(), "修改成功");
     }
 
     /**
-     * 删除 time_data
+     * 删除 TimeData 记录
      */
     @DeleteMapping("/{subjectPhone}/{glassesMac}")
     public ResponseEntity<ApiResponse> deleteTimeData(@PathVariable String subjectPhone,
-                                                      @PathVariable String glassesMac) {
-
-        boolean removed = timeDataService.remove(new QueryWrapper<TimeData>()
+                                                      @PathVariable String glassesMac,
+                                                      @RequestParam String username) {
+        User currentUser = userService.getById(username);
+        if (currentUser == null) {
+            return ApiResponse.createResponse(HttpStatus.UNAUTHORIZED.value(), "未授权的访问");
+        }
+        // 查找要删除的记录
+        QueryWrapper<TimeData> query = new QueryWrapper<TimeData>()
                 .eq("subject_phone", subjectPhone)
-                .eq("glasses_mac", glassesMac));
-
-        if (!removed) {
+                .eq("glasses_mac", glassesMac);
+        TimeData record = timeDataService.getOne(query);
+        if (record == null) {
             return ApiResponse.createResponse(HttpStatus.NOT_FOUND.value(), "记录未找到或已删除");
         }
+        // 权限校验：个人用户只能删除自己的记录；组织用户只能删除本组织用户的记录（共享的数据不可删除）；管理员/超管可删除任意记录
+        String authType = currentUser.getAuthorityType();
+        if ("个人".equals(authType)) {
+            if (!record.getUsername().equals(currentUser.getUsername())) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限删除该记录");
+            }
+        } else if ("组织".equals(authType)) {
+            User recordUser = userService.getById(record.getUsername());
+            if (recordUser == null || !Objects.equals(recordUser.getOrganizationId(), currentUser.getOrganizationId())) {
+                return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限删除该记录");
+            }
+        }
+        // 执行删除
+        timeDataService.remove(query);
         return ApiResponse.createResponse(HttpStatus.OK.value(), "删除成功");
     }
 
+    // DTO 类：用于更新 TimeData 接收的数据
     static class UpdateTimeDataDto {
         private String username;
         private String startTime;
         private Integer duration;
-
         public String getUsername() { return username; }
         public void setUsername(String u) { this.username = u; }
         public String getStartTime() { return startTime; }
