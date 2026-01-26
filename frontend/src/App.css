@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 }
 
 .app-logo {
@@ -32,6 +33,21 @@
   margin-top: auto;
   padding: 0 20px 24px;
   color: #cbd5f5;
+}
+
+.sider-toggle {
+  margin-top: auto;
+  padding: 8px 12px 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sider-toggle .ant-btn {
+  color: #cbd5f5;
+}
+
+.sider-toggle .ant-btn:hover {
+  color: #fff;
 }
 
 .sider-user {

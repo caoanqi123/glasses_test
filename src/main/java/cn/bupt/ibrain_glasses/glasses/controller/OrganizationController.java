@@ -57,7 +57,7 @@ public class OrganizationController {
     public ResponseEntity<ApiResponse> createOrganization(@RequestParam String currentUsername,
                                                           @RequestBody Organization org) {
         User currentUser = userService.getById(currentUsername);
-        if (currentUser == null || "个人".equals(currentUser.getAuthorityType()) || "组织".equals(currentUser.getAuthorityType())) {
+        if (currentUser == null || "个人".equals(currentUser.getAuthorityType())) {
             return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
         }
         if (org.getOrganizationId() == null || org.getOrganizationId().trim().isEmpty()) {
@@ -84,8 +84,15 @@ public class OrganizationController {
                                                           @RequestParam String currentUsername,
                                                           @RequestBody UpdateOrgDto dto) {
         User currentUser = userService.getById(currentUsername);
-        if (currentUser == null || "个人".equals(currentUser.getAuthorityType()) || "组织".equals(currentUser.getAuthorityType())) {
+        if (currentUser == null || "个人".equals(currentUser.getAuthorityType())) {
             return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+        }
+        if ("001".equals(orgId)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "该组织不可修改");
+        }
+        if ("组织".equals(currentUser.getAuthorityType())
+                && !Objects.equals(currentUser.getOrganizationId(), orgId)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "只能修改本组织");
         }
         Organization org = service.getById(orgId);
         if (org == null) {
@@ -107,8 +114,15 @@ public class OrganizationController {
     public ResponseEntity<ApiResponse> deleteOrganization(@PathVariable String orgId,
                                                           @RequestParam String currentUsername) {
         User currentUser = userService.getById(currentUsername);
-        if (currentUser == null || "个人".equals(currentUser.getAuthorityType()) || "组织".equals(currentUser.getAuthorityType())) {
+        if (currentUser == null || "个人".equals(currentUser.getAuthorityType())) {
             return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限执行此操作");
+        }
+        if ("001".equals(orgId)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "该组织不可删除");
+        }
+        if ("组织".equals(currentUser.getAuthorityType())
+                && !Objects.equals(currentUser.getOrganizationId(), orgId)) {
+            return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "只能删除本组织");
         }
         Organization org = service.getById(orgId);
         if (org == null) {
@@ -120,7 +134,7 @@ public class OrganizationController {
             return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "默认关联账号不存在");
         }
         if (orgId.equals(fallbackUser.getOrganizationId())) {
-            fallbackUser.setOrganizationId(null);
+            fallbackUser.setOrganizationId("");
             userService.updateById(fallbackUser);
         }
         List<User> orgUsers = userService.list(new QueryWrapper<User>().eq("organization_id", orgId));

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Avatar } from 'antd';
+import { Layout, Menu, Button, Avatar, Dropdown } from 'antd';
 import {
     UserOutlined,
     DatabaseOutlined,
     TeamOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import './App.css';
 import LoginPage from './pages/LoginPage';
@@ -69,13 +71,24 @@ function App() {
         userManage: '用户管理',
     };
 
+    const [collapsed, setCollapsed] = useState(false);
+    const userMenu = {
+        items: [
+            {
+                key: 'logout',
+                label: '退出登录',
+                onClick: handleLogout,
+            },
+        ],
+    };
+
     return (
         <Layout className="app-layout">
             {/* 左侧侧边栏菜单 */}
-            <Sider width={220} className="app-sider">
+            <Sider width={220} collapsedWidth={72} collapsed={collapsed} className="app-sider">
                 <div className="app-logo">
                     <DatabaseOutlined />
-                    <span>眼镜数据管理系统</span>
+                    {!collapsed && <span>眼镜数据管理系统</span>}
                 </div>
                 <Menu
                     theme="dark"
@@ -84,10 +97,12 @@ function App() {
                     onClick={(e) => setCurrentPage(e.key)}
                     items={menuItems}
                 />
-                <div className="sider-footer">
-                    <Button type="primary" ghost size="small" onClick={handleLogout}>
-                        退出登录
-                    </Button>
+                <div className="sider-toggle">
+                    <Button
+                        type="text"
+                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                        onClick={() => setCollapsed(!collapsed)}
+                    />
                 </div>
             </Sider>
             {/* 右侧主内容区 */}
@@ -96,9 +111,11 @@ function App() {
                     <div className="header-title">{pageTitleMap[currentPage]}</div>
                     <div className="header-user">
                         <span>{currentUser.username}</span>
-                        <Avatar style={{ backgroundColor: '#3b82f6' }}>
-                            {(name || currentUser.username).slice(0, 1)}
-                        </Avatar>
+                        <Dropdown menu={userMenu} placement="bottomRight" trigger={['click']}>
+                            <Avatar style={{ backgroundColor: '#3b82f6', cursor: 'pointer' }}>
+                                {(name || currentUser.username).slice(0, 1)}
+                            </Avatar>
+                        </Dropdown>
                     </div>
                 </Header>
                 <Content className="app-content">

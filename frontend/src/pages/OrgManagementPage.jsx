@@ -27,7 +27,21 @@ function OrgManagementPage({ currentUser }) {
         fetchOrgs();
     }, []);
 
+    const canManageOrg = (org) => {
+        if (org.organizationId === '001') {
+            return false;
+        }
+        if (currentUser.authorityType === '超管' || currentUser.authorityType === '管理员') {
+            return true;
+        }
+        return currentUser.authorityType === '组织' && currentUser.organizationId === org.organizationId;
+    };
+
     const startEditOrg = (org) => {
+        if (!canManageOrg(org)) {
+            message.warning("无权限修改该组织");
+            return;
+        }
         setEditingOrg(org);
         setNewOrgName(org.organizationName || '');
     };
@@ -67,6 +81,10 @@ function OrgManagementPage({ currentUser }) {
     };
 
     const deleteOrg = async (org) => {
+        if (!canManageOrg(org)) {
+            message.warning("无权限删除该组织");
+            return;
+        }
         try {
             const res = await fetch(`/organizations/${encodeURIComponent(org.organizationId)}?currentUsername=${currentUser.username}`, {
                 method: 'DELETE',
@@ -137,15 +155,20 @@ function OrgManagementPage({ currentUser }) {
             key: 'actions',
             render: (_, record) => (
                 <Space className="action-buttons">
-                    <Button type="link" size="small" onClick={() => startEditOrg(record)}>修改</Button>
+                    <Button type="link" size="small" onClick={() => startEditOrg(record)} disabled={!canManageOrg(record)}>
+                        修改
+                    </Button>
                     <Popconfirm
                         title={`确认删除组织 ${record.organizationId} 吗？`}
                         description="将把组织内所有用户的数据迁移到账号 18459898778，并删除组织及其用户。"
                         onConfirm={() => deleteOrg(record)}
                         okText="确认"
                         cancelText="取消"
+                        disabled={!canManageOrg(record)}
                     >
-                        <Button type="link" size="small" danger>删除</Button>
+                        <Button type="link" size="small" danger disabled={!canManageOrg(record)}>
+                            删除
+                        </Button>
                     </Popconfirm>
                 </Space>
             )
@@ -177,17 +200,18 @@ function OrgManagementPage({ currentUser }) {
                     okText="保存"
                     cancelText="取消"
                 >
-                    <div style={{ marginBottom: 12 }}>
-                        <b>组织ID:</b> {editingOrg.organizationId}
-                    </div>
-                    <div>
-                        <b>组织名称:</b>
-                        <Input
-                            value={newOrgName}
-                            onChange={(e) => setNewOrgName(e.target.value)}
-                            placeholder="请输入组织名称"
-                        />
-                    </div>
+                    <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                        <Form.Item label="组织ID">
+                            <Input value={editingOrg.organizationId} disabled />
+                        </Form.Item>
+                        <Form.Item label="组织名称">
+                            <Input
+                                value={newOrgName}
+                                onChange={(e) => setNewOrgName(e.target.value)}
+                                placeholder="请输入组织名称"
+                            />
+                        </Form.Item>
+                    </Form>
                 </Modal>
             )}
             <Modal
