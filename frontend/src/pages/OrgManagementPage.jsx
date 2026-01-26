@@ -136,8 +136,8 @@ function OrgManagementPage({ currentUser }) {
             title: '操作',
             key: 'actions',
             render: (_, record) => (
-                <Space>
-                    <Button size="small" onClick={() => startEditOrg(record)}>修改</Button>
+                <Space className="action-buttons">
+                    <Button type="link" size="small" onClick={() => startEditOrg(record)}>修改</Button>
                     <Popconfirm
                         title={`确认删除组织 ${record.organizationId} 吗？`}
                         description="将把组织内所有用户的数据迁移到账号 18459898778，并删除组织及其用户。"
@@ -145,7 +145,7 @@ function OrgManagementPage({ currentUser }) {
                         okText="确认"
                         cancelText="取消"
                     >
-                        <Button size="small" danger>删除</Button>
+                        <Button type="link" size="small" danger>删除</Button>
                     </Popconfirm>
                 </Space>
             )

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Select, Popconfirm, message, Card, Form, Input } from 'antd';
+import { Table, Button, Modal, Select, Popconfirm, message, Card, Form, Input, Space } from 'antd';
 
 function UserManagementPage({ currentUser }) {
     const [userList, setUserList] = useState([]);      // 用户列表数据
@@ -241,8 +241,9 @@ function UserManagementPage({ currentUser }) {
             render: (text) => text || '' },
         { title: '操作', key: 'actions',
             render: (_, record) => (
-                <>
+                <Space className="action-buttons">
                     <Button
+                        type="link"
                         size="small"
                         onClick={() => startEditUser(record)}
                         disabled={!canManageTarget(record)}
@@ -255,15 +256,15 @@ function UserManagementPage({ currentUser }) {
                         okText="确认" cancelText="取消"
                     >
                         <Button
+                            type="link"
                             size="small"
                             danger
-                            style={{ marginLeft: 8 }}
                             disabled={!canManageTarget(record)}
                         >
                             删除
                         </Button>
                     </Popconfirm>
-                </>
+                </Space>
             )
         },
     ];

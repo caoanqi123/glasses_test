@@ -153,16 +153,16 @@ function TimeDataPage({ currentUser }) {
 
     // 表格列定义
     const columns = [
-        { title: '受试者手机', dataIndex: ['timeDataPK', 'subjectPhone'], key: 'subjectPhone' },
-        { title: '眼镜MAC', dataIndex: ['timeDataPK', 'glassesMac'], key: 'glassesMac' },
-        { title: '记录者账号', dataIndex: 'username', key: 'username' },
+        { title: '被试手机号', dataIndex: ['timeDataPK', 'subjectPhone'], key: 'subjectPhone' },
+        { title: 'MAC', dataIndex: ['timeDataPK', 'glassesMac'], key: 'glassesMac' },
+        { title: '关联账号', dataIndex: 'username', key: 'username' },
         {
             title: '开始时间',
             dataIndex: 'startTime',
             key: 'startTime',
             render: (value) => (value ? String(value).replace('T', ' ') : ''),
         },
-        { title: '持续(秒)', dataIndex: 'duration', key: 'duration' },
+        { title: '持续时间(秒)', dataIndex: 'duration', key: 'duration' },
         {
             title: '操作',
             key: 'actions',

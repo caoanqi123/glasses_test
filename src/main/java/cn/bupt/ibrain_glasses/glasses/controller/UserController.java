@@ -91,7 +91,7 @@ public class UserController {
             }
         } else {
             // 管理员/超管无需组织
-            orgId = null;
+            orgId = "";
         }
         // 4. 保存新用户（密码加密存储）
         String encodedPwd = encoder.encode(rawPassword);
@@ -159,7 +159,7 @@ public class UserController {
             if ("组织".equals(currentAuth)) {
                 return ApiResponse.createResponse(HttpStatus.FORBIDDEN.value(), "无权限设置该权限");
             }
-            orgId = null;
+            orgId = "";
         }
         String defaultPassword = "12345678";
         String encodedPwd = encoder.encode(defaultPassword);
@@ -283,7 +283,7 @@ public class UserController {
         } else {
             // 管理员/超管角色，如果传了组织则校验，否则设为空
             if (newOrgId == null || newOrgId.trim().isEmpty()) {
-                target.setOrganizationId(null);
+                target.setOrganizationId("");
             } else {
                 Organization org = organizationService.getById(newOrgId);
                 if (org == null) {
