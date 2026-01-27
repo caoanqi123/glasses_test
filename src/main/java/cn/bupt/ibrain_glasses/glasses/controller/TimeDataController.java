@@ -25,6 +25,11 @@ import java.util.*;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -327,32 +332,52 @@ public class TimeDataController {
 
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("time_data");
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        CellStyle bodyStyle = workbook.createCellStyle();
+        bodyStyle.setAlignment(HorizontalAlignment.CENTER);
+        bodyStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         int rowIndex = 0;
         Row header = sheet.createRow(rowIndex++);
         String[] headers = {
-                "被试手机号", "被试姓名", "被试性别", "被试年龄", "MAC", "关联账号",
-                "开始时间", "持续时间", "frequency", "light_brightness", "sound_volume",
-                "sync_brightness", "sync_volume"
+                "被试手机号", "MAC", "被试姓名", "被试性别", "被试年龄",
+                "开始时间", "持续时间", "频率", "光训练亮度", "声训练大小",
+                "同步训练亮度", "同步训练大小"
         };
         for (int i = 0; i < headers.length; i++) {
-            header.createCell(i).setCellValue(headers[i]);
+            Cell cell = header.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
         }
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (TimeData record : records) {
             Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue(defaultString(record.getSubjectPhone()));
-            row.createCell(1).setCellValue(defaultString(record.getSubjectName()));
-            row.createCell(2).setCellValue(defaultString(record.getSubjectGender()));
-            row.createCell(3).setCellValue(record.getSubjectAge() == null ? "" : String.valueOf(record.getSubjectAge()));
-            row.createCell(4).setCellValue(defaultString(record.getGlassesMac()));
-            row.createCell(5).setCellValue(defaultString(record.getUsername()));
-            row.createCell(6).setCellValue(record.getStartTime() == null ? "" : record.getStartTime().format(fmt));
-            row.createCell(7).setCellValue(formatDuration(record.getDuration()));
-            row.createCell(8).setCellValue(record.getFrequency() == null ? "" : String.valueOf(record.getFrequency()));
-            row.createCell(9).setCellValue(record.getLightBrightness() == null ? "" : String.valueOf(record.getLightBrightness()));
-            row.createCell(10).setCellValue(record.getSoundVolume() == null ? "" : String.valueOf(record.getSoundVolume()));
-            row.createCell(11).setCellValue(record.getSyncBrightness() == null ? "" : String.valueOf(record.getSyncBrightness()));
-            row.createCell(12).setCellValue(record.getSyncVolume() == null ? "" : String.valueOf(record.getSyncVolume()));
+            String[] values = {
+                    defaultString(record.getSubjectPhone()),
+                    defaultString(record.getGlassesMac()),
+                    defaultString(record.getSubjectName()),
+                    defaultString(record.getSubjectGender()),
+                    record.getSubjectAge() == null ? "" : String.valueOf(record.getSubjectAge()),
+                    record.getStartTime() == null ? "" : record.getStartTime().format(fmt),
+                    formatDuration(record.getDuration()),
+                    record.getFrequency() == null ? "" : String.valueOf(record.getFrequency()),
+                    record.getLightBrightness() == null ? "" : String.valueOf(record.getLightBrightness()),
+                    record.getSoundVolume() == null ? "" : String.valueOf(record.getSoundVolume()),
+                    record.getSyncBrightness() == null ? "" : String.valueOf(record.getSyncBrightness()),
+                    record.getSyncVolume() == null ? "" : String.valueOf(record.getSyncVolume())
+            };
+            for (int i = 0; i < values.length; i++) {
+                Cell cell = row.createCell(i);
+                cell.setCellValue(values[i]);
+                cell.setCellStyle(bodyStyle);
+            }
+        }
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
         }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
