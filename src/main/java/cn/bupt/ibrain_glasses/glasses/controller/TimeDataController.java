@@ -8,6 +8,8 @@ import cn.bupt.ibrain_glasses.glasses.service.TimeDataService;
 import cn.bupt.ibrain_glasses.glasses.service.UserService;
 import cn.bupt.ibrain_glasses.glasses.utils.ApiResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ public class TimeDataController {
     private final TimeDataService timeDataService;
     private final UserService userService;
     private final OrgDataShareService orgDataShareService;
+    private static final Logger logger = LoggerFactory.getLogger(TimeDataController.class);
 
     public TimeDataController(TimeDataService tdService,
                               UserService userService,
@@ -38,40 +41,81 @@ public class TimeDataController {
     @PostMapping("/batch")
     public ResponseEntity<ApiResponse> uploadTimeData(@RequestBody List<TimeData> timeDataList) {
         if (timeDataList == null || timeDataList.isEmpty()) {
-            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "上传数据不能为空");
+            logger.error("Upload time data failed: empty list");
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "参数错误：上传为空列表");
         }
-        List<TimeData> validRecords = new ArrayList<>();
-        List<TimeData> invalidRecords = new ArrayList<>();
+
+        List<String> invalidKeys = new ArrayList<>();
+        List<String> duplicateKeys = new ArrayList<>();
+
+        // 用于检测“同一批请求体内部”的重复 key
+        Set<String> seenKeys = new HashSet<>();
+
         for (TimeData record : timeDataList) {
-            if (record == null
-                    || record.getSubjectPhone() == null
-                    || !record.getSubjectPhone().matches("\\d{11}")
-                    || record.getGlassesMac() == null
-                    || record.getGlassesMac().trim().isEmpty()
-                    || record.getUsername() == null
-                    || !record.getUsername().matches("\\d{11}")
-                    || record.getStartTime() == null
-                    || record.getDuration() == null
-                    || record.getDuration() <= 0
-                    || record.getSubjectName() == null
-                    || record.getSubjectName().trim().isEmpty()
-                    || record.getSubjectGender() == null
-                    || !isValidGender(record.getSubjectGender())
-                    || record.getSubjectAge() == null
-                    || record.getSubjectAge() <= 0) {
-                invalidRecords.add(record);
-            } else {
-                validRecords.add(record);
+            String sp = (record == null ? null : record.getSubjectPhone());
+            String gm = (record == null ? null : record.getGlassesMac());
+            String u  = (record == null ? null : record.getUsername());
+            String key = "(" + sp + "," + gm + ")";
+
+            boolean ok =
+                    record != null
+                            && sp != null && sp.matches("\\d{11}")
+                            && gm != null && !gm.trim().isEmpty()               // 如需严格 17 位，可改成 gm.length()==17
+                            && u  != null && u.matches("\\d{11}")
+                            && record.getStartTime() != null
+                            && record.getDuration() != null && record.getDuration() > 0
+                            && record.getSubjectName() != null && !record.getSubjectName().trim().isEmpty()
+                            && record.getSubjectGender() != null && isValidGender(record.getSubjectGender())
+                            && record.getSubjectAge() != null && record.getSubjectAge() > 0;
+
+            if (!ok) {
+                invalidKeys.add(key);
+                logger.error("Invalid time data: key={}, username={}, start_time={}, duration={}, name={}, gender={}, age={}",
+                        key, u,
+                        (record == null ? null : record.getStartTime()),
+                        (record == null ? null : record.getDuration()),
+                        (record == null ? null : record.getSubjectName()),
+                        (record == null ? null : record.getSubjectGender()),
+                        (record == null ? null : record.getSubjectAge()));
+                continue;
+            }
+
+            // 请求体内重复
+            if (!seenKeys.add(key)) {
+                duplicateKeys.add(key);
+                logger.warn("Duplicate in request list: key={}, username={}", key, u);
+                continue;
+            }
+
+            // 入库，捕获数据库重复
+            try {
+                // 二选一：按你项目实际情况使用
+                timeDataService.save(record);          // MyBatis-Plus 单条插入
+                // timeDataMapper.insertTimeData(record); // 自定义 mapper 插入
+
+                logger.info("Inserted time data: key={}, username={}, start_time={}, duration={}",
+                        key, u, record.getStartTime(), record.getDuration());
+            } catch (org.springframework.dao.DuplicateKeyException ex) {
+                duplicateKeys.add(key);
+                logger.warn("Duplicate in DB: key={}, username={}", key, u);
             }
         }
-        if (!validRecords.isEmpty()) {
-            timeDataService.saveBatch(validRecords);
+
+        // 全部成功
+        if (invalidKeys.isEmpty() && duplicateKeys.isEmpty()) {
+            logger.info("Batch insert success: total={}, invalid=0, duplicate=0", timeDataList.size());
+            return ApiResponse.createResponse(HttpStatus.OK.value(), "全部保存成功");
         }
-        Map<String, Object> result = new HashMap<>();
-        result.put("successCount", validRecords.size());
-        result.put("failedCount", invalidRecords.size());
-        result.put("failedRecords", invalidRecords);
-        return ApiResponse.createResponse(HttpStatus.OK.value(), "上传完成", result);
+
+        // 只返回 msg（不带 data）
+        String msg = (invalidKeys.isEmpty() ? "" : "格式错误：" + String.join("、", invalidKeys))
+                + (!invalidKeys.isEmpty() && !duplicateKeys.isEmpty() ? "；" : "")
+                + (duplicateKeys.isEmpty() ? "" : "重复：" + String.join("、", duplicateKeys));
+
+        logger.error("Batch insert rejected: total={}, invalid={}, duplicate={}, msg={}",
+                timeDataList.size(), invalidKeys.size(), duplicateKeys.size(), msg);
+
+        return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), msg);
     }
 
     /**
