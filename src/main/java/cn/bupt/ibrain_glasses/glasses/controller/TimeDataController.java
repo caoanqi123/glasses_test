@@ -348,10 +348,12 @@ public class TimeDataController {
                 "开始时间", "持续时间", "频率", "光训练亮度", "声训练大小",
                 "同步训练亮度", "同步训练大小"
         };
+        int[] maxWidths = new int[headers.length];
         for (int i = 0; i < headers.length; i++) {
             Cell cell = header.createCell(i);
             cell.setCellValue(headers[i]);
             cell.setCellStyle(headerStyle);
+            maxWidths[i] = headers[i].length();
         }
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (TimeData record : records) {
@@ -374,10 +376,14 @@ public class TimeDataController {
                 Cell cell = row.createCell(i);
                 cell.setCellValue(values[i]);
                 cell.setCellStyle(bodyStyle);
+                if (values[i] != null) {
+                    maxWidths[i] = Math.max(maxWidths[i], values[i].length());
+                }
             }
         }
         for (int i = 0; i < headers.length; i++) {
-            sheet.autoSizeColumn(i);
+            int width = Math.min(255, maxWidths[i] + 4);
+            sheet.setColumnWidth(i, width * 256);
         }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
