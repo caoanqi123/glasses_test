@@ -355,6 +355,14 @@ public class TimeDataController {
             cell.setCellStyle(headerStyle);
             maxWidths[i] = headers[i].length();
         }
+        Map<Integer, Integer> minHeaderWidths = new HashMap<>();
+        minHeaderWidths.put(2, 12);  // 被试姓名
+        minHeaderWidths.put(3, 12);  // 被试性别
+        minHeaderWidths.put(4, 12);  // 被试年龄
+        minHeaderWidths.put(8, 14);  // 光训练亮度
+        minHeaderWidths.put(9, 14);  // 声训练大小
+        minHeaderWidths.put(10, 16); // 同步训练亮度
+        minHeaderWidths.put(11, 16); // 同步训练大小
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (TimeData record : records) {
             Row row = sheet.createRow(rowIndex++);
@@ -382,7 +390,8 @@ public class TimeDataController {
             }
         }
         for (int i = 0; i < headers.length; i++) {
-            int width = Math.min(255, maxWidths[i] + 4);
+            int minWidth = minHeaderWidths.getOrDefault(i, maxWidths[i]);
+            int width = Math.min(255, Math.max(maxWidths[i], minWidth) + 6);
             sheet.setColumnWidth(i, width * 256);
         }
 
