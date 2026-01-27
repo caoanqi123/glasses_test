@@ -2,6 +2,7 @@ package cn.bupt.ibrain_glasses.glasses.controller;
 
 import cn.bupt.ibrain_glasses.glasses.model.OrgDataShare;
 import cn.bupt.ibrain_glasses.glasses.model.TimeData;
+import cn.bupt.ibrain_glasses.glasses.model.TimeDataPK;
 import cn.bupt.ibrain_glasses.glasses.model.User;
 import cn.bupt.ibrain_glasses.glasses.service.OrgDataShareService;
 import cn.bupt.ibrain_glasses.glasses.service.TimeDataService;
@@ -11,13 +12,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @RestController
 @RequestMapping("/time-data")
@@ -66,7 +75,12 @@ public class TimeDataController {
                             && record.getDuration() != null && record.getDuration() > 0
                             && record.getSubjectName() != null && !record.getSubjectName().trim().isEmpty()
                             && record.getSubjectGender() != null && isValidGender(record.getSubjectGender())
-                            && record.getSubjectAge() != null && record.getSubjectAge() > 0;
+                            && record.getSubjectAge() != null && record.getSubjectAge() > 0
+                            && record.getFrequency() != null && record.getFrequency() >= 0
+                            && (record.getLightBrightness() == null || record.getLightBrightness() >= 0)
+                            && (record.getSoundVolume() == null || record.getSoundVolume() >= 0)
+                            && (record.getSyncBrightness() == null || record.getSyncBrightness() >= 0)
+                            && (record.getSyncVolume() == null || record.getSyncVolume() >= 0);
 
             if (!ok) {
                 invalidKeys.add(key);
@@ -162,7 +176,19 @@ public class TimeDataController {
         // 查询所有 username 属于 allowedUsernames 集合的时间数据
         List<TimeData> results = timeDataService.list(
                 new QueryWrapper<TimeData>().in("username", allowedUsernames));
-        return ApiResponse.createResponse(HttpStatus.OK.value(), "查询成功", results);
+        List<TimeDataSummary> summaries = new ArrayList<>();
+        for (TimeData record : results) {
+            TimeDataSummary summary = new TimeDataSummary();
+            summary.setTimeDataPK(record.getTimeDataPK());
+            summary.setSubjectName(record.getSubjectName());
+            summary.setSubjectGender(record.getSubjectGender());
+            summary.setSubjectAge(record.getSubjectAge());
+            summary.setUsername(record.getUsername());
+            summary.setStartTime(record.getStartTime());
+            summary.setDuration(record.getDuration());
+            summaries.add(summary);
+        }
+        return ApiResponse.createResponse(HttpStatus.OK.value(), "查询成功", summaries);
     }
 
     /**
@@ -273,6 +299,72 @@ public class TimeDataController {
         return ApiResponse.createResponse(HttpStatus.OK.value(), "删除成功");
     }
 
+    @PostMapping("/export")
+    public ResponseEntity<byte[]> exportTimeData(@RequestBody List<TimeDataKey> keys) throws IOException {
+        if (keys == null || keys.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        QueryWrapper<TimeData> query = new QueryWrapper<>();
+        boolean hasValid = false;
+        for (TimeDataKey key : keys) {
+            if (key == null || key.getSubjectPhone() == null || key.getGlassesMac() == null) {
+                continue;
+            }
+            if (!hasValid) {
+                query.eq("subject_phone", key.getSubjectPhone())
+                        .eq("glasses_mac", key.getGlassesMac());
+                hasValid = true;
+            } else {
+                query.or()
+                        .eq("subject_phone", key.getSubjectPhone())
+                        .eq("glasses_mac", key.getGlassesMac());
+            }
+        }
+        if (!hasValid) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<TimeData> records = timeDataService.list(query);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("time_data");
+        int rowIndex = 0;
+        Row header = sheet.createRow(rowIndex++);
+        String[] headers = {
+                "被试手机号", "被试姓名", "被试性别", "被试年龄", "MAC", "关联账号",
+                "开始时间", "持续时间", "frequency", "light_brightness", "sound_volume",
+                "sync_brightness", "sync_volume"
+        };
+        for (int i = 0; i < headers.length; i++) {
+            header.createCell(i).setCellValue(headers[i]);
+        }
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (TimeData record : records) {
+            Row row = sheet.createRow(rowIndex++);
+            row.createCell(0).setCellValue(defaultString(record.getSubjectPhone()));
+            row.createCell(1).setCellValue(defaultString(record.getSubjectName()));
+            row.createCell(2).setCellValue(defaultString(record.getSubjectGender()));
+            row.createCell(3).setCellValue(record.getSubjectAge() == null ? "" : String.valueOf(record.getSubjectAge()));
+            row.createCell(4).setCellValue(defaultString(record.getGlassesMac()));
+            row.createCell(5).setCellValue(defaultString(record.getUsername()));
+            row.createCell(6).setCellValue(record.getStartTime() == null ? "" : record.getStartTime().format(fmt));
+            row.createCell(7).setCellValue(formatDuration(record.getDuration()));
+            row.createCell(8).setCellValue(record.getFrequency() == null ? "" : String.valueOf(record.getFrequency()));
+            row.createCell(9).setCellValue(record.getLightBrightness() == null ? "" : String.valueOf(record.getLightBrightness()));
+            row.createCell(10).setCellValue(record.getSoundVolume() == null ? "" : String.valueOf(record.getSoundVolume()));
+            row.createCell(11).setCellValue(record.getSyncBrightness() == null ? "" : String.valueOf(record.getSyncBrightness()));
+            row.createCell(12).setCellValue(record.getSyncVolume() == null ? "" : String.valueOf(record.getSyncVolume()));
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header("Content-Disposition", "attachment; filename=\"time_data.xlsx\"")
+                .body(outputStream.toByteArray());
+    }
+
     // DTO 类：用于更新 TimeData 接收的数据
     static class UpdateTimeDataDto {
         private String username;
@@ -295,7 +387,53 @@ public class TimeDataController {
         public void setSubjectAge(Integer subjectAge) { this.subjectAge = subjectAge; }
     }
 
+    static class TimeDataSummary {
+        private TimeDataPK timeDataPK;
+        private String subjectName;
+        private String subjectGender;
+        private Integer subjectAge;
+        private String username;
+        private LocalDateTime startTime;
+        private Integer duration;
+        public TimeDataPK getTimeDataPK() { return timeDataPK; }
+        public void setTimeDataPK(TimeDataPK timeDataPK) { this.timeDataPK = timeDataPK; }
+        public String getSubjectName() { return subjectName; }
+        public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
+        public String getSubjectGender() { return subjectGender; }
+        public void setSubjectGender(String subjectGender) { this.subjectGender = subjectGender; }
+        public Integer getSubjectAge() { return subjectAge; }
+        public void setSubjectAge(Integer subjectAge) { this.subjectAge = subjectAge; }
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+        public LocalDateTime getStartTime() { return startTime; }
+        public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+        public Integer getDuration() { return duration; }
+        public void setDuration(Integer duration) { this.duration = duration; }
+    }
+
+    static class TimeDataKey {
+        private String subjectPhone;
+        private String glassesMac;
+        public String getSubjectPhone() { return subjectPhone; }
+        public void setSubjectPhone(String subjectPhone) { this.subjectPhone = subjectPhone; }
+        public String getGlassesMac() { return glassesMac; }
+        public void setGlassesMac(String glassesMac) { this.glassesMac = glassesMac; }
+    }
+
     private boolean isValidGender(String gender) {
         return "男".equals(gender) || "女".equals(gender);
+    }
+
+    private static String formatDuration(Integer seconds) {
+        if (seconds == null || seconds < 0) {
+            return "";
+        }
+        int minutes = seconds / 60;
+        int remainingSeconds = seconds % 60;
+        return String.format("%02d:%02d", minutes, remainingSeconds);
+    }
+
+    private static String defaultString(String value) {
+        return value == null ? "" : value;
     }
 }

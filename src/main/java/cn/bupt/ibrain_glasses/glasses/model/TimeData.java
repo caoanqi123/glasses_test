@@ -37,6 +37,21 @@ public class TimeData implements Serializable {
     @TableField("duration")
     private Integer duration;
 
+    @TableField("frequency")
+    private Integer frequency;
+
+    @TableField("light_brightness")
+    private Integer lightBrightness;
+
+    @TableField("sound_volume")
+    private Integer soundVolume;
+
+    @TableField("sync_brightness")
+    private Integer syncBrightness;
+
+    @TableField("sync_volume")
+    private Integer syncVolume;
+
     // 复合主键对象不是表字段，必须 exist=false，否则会生成 time_data_p_k
     @TableField(exist = false)
     private TimeDataPK timeDataPK;
