@@ -353,14 +353,9 @@ public class TimeDataController {
         Row header = sheet.createRow(rowIndex++);
         String[] headers = {
                 "subjectPhone", "MAC", "startTime", "duration", "subjectName",
-                "subjectGender", "subjectAge", "frequency", "light_brightness",
-                "sound_volume", "sync_brightness", "sync_volume"
+                "subjectGender", "subjectAge", "frequency", "lightBrightness",
+                "soundVolume", "syncBrightness", "syncVolume"
         };
-        for (int i = 0; i < headers.length; i++) {
-            if ("soound_volume".equals(headers[i])) {
-                headers[i] = "sound_volume";
-            }
-        }
         int[] maxWidths = new int[headers.length];
         for (int i = 0; i < headers.length; i++) {
             Cell cell = header.createCell(i);
