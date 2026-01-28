@@ -69,7 +69,8 @@ public class TimeDataController {
             String sp = (record == null ? null : record.getSubjectPhone());
             String gm = (record == null ? null : record.getGlassesMac());
             String u  = (record == null ? null : record.getUsername());
-            String key = "(" + sp + "," + gm + ")";
+            LocalDateTime st = (record == null ? null : record.getStartTime());
+            String key = "(" + sp + "," + gm + "," + st + ")";
 
             boolean ok =
                     record != null
