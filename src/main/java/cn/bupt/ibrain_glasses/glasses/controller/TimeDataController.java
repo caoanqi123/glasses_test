@@ -354,7 +354,7 @@ public class TimeDataController {
         String[] headers = {
                 "subjectPhone", "MAC", "startTime", "duration", "subjectName",
                 "subjectGender", "subjectAge", "frequency", "light_brightness",
-                "soound_volume", "sync_brightness", "sync_volume"
+                "sound_volume", "sync_brightness", "sync_volume"
         };
         int[] maxWidths = new int[headers.length];
         for (int i = 0; i < headers.length; i++) {
