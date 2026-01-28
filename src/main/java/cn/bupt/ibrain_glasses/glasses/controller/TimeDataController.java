@@ -372,7 +372,7 @@ public class TimeDataController {
                     record.getStartTime() == null ? "" : record.getStartTime().format(fmt),
                     formatDuration(record.getDuration()),
                     defaultString(record.getSubjectName()),
-                    defaultString(record.getSubjectGender()),
+                    formatGender(record.getSubjectGender()),
                     record.getSubjectAge() == null ? "" : String.valueOf(record.getSubjectAge()),
                     record.getFrequency() == null ? "" : String.valueOf(record.getFrequency()),
                     record.getLightBrightness() == null ? "" : String.valueOf(record.getLightBrightness()),
@@ -477,6 +477,16 @@ public class TimeDataController {
 
     private static String defaultString(String value) {
         return value == null ? "" : value;
+    }
+
+    private static String formatGender(String gender) {
+        if ("男".equals(gender)) {
+            return "M";
+        }
+        if ("女".equals(gender)) {
+            return "F";
+        }
+        return defaultString(gender);
     }
 
     private LocalDateTime parseStartTime(String startStr) {
