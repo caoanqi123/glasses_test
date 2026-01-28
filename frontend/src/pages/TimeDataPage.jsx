@@ -30,6 +30,8 @@ function TimeDataPage({ currentUser }) {
     const [newSubjectName, setNewSubjectName] = useState('');
     const [newSubjectGender, setNewSubjectGender] = useState('');
     const [newSubjectAge, setNewSubjectAge] = useState(null);
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
     // 初始化加载当前用户可查看的 timeData 列表
     useEffect(() => {
@@ -122,9 +124,9 @@ function TimeDataPage({ currentUser }) {
             subjectGender: newSubjectGender,
             subjectAge: newSubjectAge,
         };
-        const { subjectPhone, glassesMac } = editingRecord.timeDataPK;
+        const { subjectPhone, glassesMac, startTime } = editingRecord.timeDataPK;
         try {
-            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}`, {
+            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?startTime=${encodeURIComponent(startTime)}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -135,7 +137,11 @@ function TimeDataPage({ currentUser }) {
             } else {
                 // 更新本地列表数据
                 setTimeDataList(prevList => prevList.map(item => {
-                    if (item.timeDataPK.subjectPhone === subjectPhone && item.timeDataPK.glassesMac === glassesMac) {
+                    if (
+                        item.timeDataPK.subjectPhone === subjectPhone
+                        && item.timeDataPK.glassesMac === glassesMac
+                        && item.timeDataPK.startTime === startTime
+                    ) {
                         return {
                             ...item,
                             username: newAccount,
@@ -159,9 +165,9 @@ function TimeDataPage({ currentUser }) {
 
     // 删除记录
     const deleteRecord = async (record) => {
-        const { subjectPhone, glassesMac } = record.timeDataPK;
+        const { subjectPhone, glassesMac, startTime } = record.timeDataPK;
         try {
-            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?username=${currentUser.username}`, {
+            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?startTime=${encodeURIComponent(startTime)}&username=${currentUser.username}`, {
                 method: 'DELETE',
             });
             const data = await res.json();
@@ -169,13 +175,72 @@ function TimeDataPage({ currentUser }) {
                 message.error(data.message || "删除失败");
             } else {
                 setTimeDataList(prevList => prevList.filter(item =>
-                    !(item.timeDataPK.subjectPhone === subjectPhone && item.timeDataPK.glassesMac === glassesMac)
+                    !(
+                        item.timeDataPK.subjectPhone === subjectPhone
+                        && item.timeDataPK.glassesMac === glassesMac
+                        && item.timeDataPK.startTime === startTime
+                    )
                 ));
                 message.success("记录已删除");
             }
         } catch (err) {
             console.error("Delete failed:", err);
             message.error("删除请求失败");
+        }
+    };
+
+    const formatDuration = (value) => {
+        if (!Number.isInteger(value) || value < 0) {
+            return '';
+        }
+        const minutes = Math.floor(value / 60);
+        const seconds = value % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const handleExport = async () => {
+        if (selectedRows.length === 0) {
+            message.warning("请先选择要导出的记录");
+            return;
+        }
+        const payload = selectedRows.map(row => ({
+            subjectPhone: row.timeDataPK.subjectPhone,
+            glassesMac: row.timeDataPK.glassesMac,
+            startTime: row.timeDataPK.startTime,
+        }));
+        try {
+            const res = await fetch('/time-data/export', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) {
+                message.error("导出失败");
+                return;
+            }
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const disposition = res.headers.get('Content-Disposition');
+            let filename = 'time_data.xlsx';
+            if (disposition) {
+                const match = disposition.match(/filename="([^"]+)"/);
+                if (match && match[1]) {
+                    filename = match[1];
+                }
+            }
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            message.success("导出成功");
+            setSelectedRowKeys([]);
+            setSelectedRows([]);
+        } catch (err) {
+            console.error("Export failed:", err);
+            message.error("导出请求失败");
         }
     };
 
@@ -194,7 +259,14 @@ function TimeDataPage({ currentUser }) {
             align: 'center',
             render: (value) => (value ? String(value).replace('T', ' ') : ''),
         },
-        { title: '持续时间(秒)', dataIndex: 'duration', key: 'duration', width: 120, align: 'center' },
+        {
+            title: '持续时间',
+            dataIndex: 'duration',
+            key: 'duration',
+            width: 120,
+            align: 'center',
+            render: (value) => formatDuration(value),
+        },
         { title: '关联账号', dataIndex: 'username', key: 'username', width: 140, align: 'center' },
         {
             title: '操作',
@@ -271,11 +343,23 @@ function TimeDataPage({ currentUser }) {
                 </Form>
             </Card>
             <Card className="table-card" bordered={false}>
+                <Row justify="end" style={{ marginBottom: 12 }}>
+                    <Button type="primary" onClick={handleExport}>
+                        批量导出
+                    </Button>
+                </Row>
                 <Table
                     className="data-table"
                     columns={columns}
                     dataSource={filteredList}
-                    rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}`}
+                    rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}_${record.timeDataPK.startTime}`}
+                    rowSelection={{
+                        selectedRowKeys,
+                        onChange: (keys, rows) => {
+                            setSelectedRowKeys(keys);
+                            setSelectedRows(rows);
+                        },
+                    }}
                     tableLayout="fixed"
                     scroll={{ x: 1200 }}
                     pagination={{ pageSize: 8, showSizeChanger: false }}

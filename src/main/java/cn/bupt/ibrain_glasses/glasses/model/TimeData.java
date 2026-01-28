@@ -37,6 +37,21 @@ public class TimeData implements Serializable {
     @TableField("duration")
     private Integer duration;
 
+    @TableField("frequency")
+    private Integer frequency;
+
+    @TableField("light_brightness")
+    private Integer lightBrightness;
+
+    @TableField("sound_volume")
+    private Integer soundVolume;
+
+    @TableField("sync_brightness")
+    private Integer syncBrightness;
+
+    @TableField("sync_volume")
+    private Integer syncVolume;
+
     // 复合主键对象不是表字段，必须 exist=false，否则会生成 time_data_p_k
     @TableField(exist = false)
     private TimeDataPK timeDataPK;
@@ -44,7 +59,7 @@ public class TimeData implements Serializable {
     // 保持旧 JSON 结构：前端仍然可以用 timeDataPK.subjectPhone / glassesMac
     public TimeDataPK getTimeDataPK() {
         if (timeDataPK == null) {
-            timeDataPK = new TimeDataPK(subjectPhone, glassesMac);
+            timeDataPK = new TimeDataPK(subjectPhone, glassesMac, startTime);
         }
         return timeDataPK;
     }
@@ -54,6 +69,7 @@ public class TimeData implements Serializable {
         if (pk != null) {
             this.subjectPhone = pk.getSubjectPhone();
             this.glassesMac = pk.getGlassesMac();
+            this.startTime = pk.getStartTime();
         }
     }
 }

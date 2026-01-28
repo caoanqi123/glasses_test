@@ -5,24 +5,34 @@
     <resultMap id="BaseResultMap" type="cn.bupt.ibrain_glasses.glasses.model.TimeData">
         <id property="subjectPhone" column="subject_phone" jdbcType="CHAR"/>
         <id property="glassesMac" column="glasses_mac" jdbcType="CHAR"/>
+        <id property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="subjectName" column="subject_name" jdbcType="VARCHAR"/>
         <result property="subjectGender" column="subject_gender" jdbcType="VARCHAR"/>
         <result property="subjectAge" column="subject_age" jdbcType="INTEGER"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
-        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="duration" column="duration" jdbcType="INTEGER"/>
+        <result property="frequency" column="frequency" jdbcType="INTEGER"/>
+        <result property="lightBrightness" column="light_brightness" jdbcType="INTEGER"/>
+        <result property="soundVolume" column="sound_volume" jdbcType="INTEGER"/>
+        <result property="syncBrightness" column="sync_brightness" jdbcType="INTEGER"/>
+        <result property="syncVolume" column="sync_volume" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        subject_phone, subject_name, subject_gender, subject_age, glasses_mac, username, start_time, duration
+        subject_phone, subject_name, subject_gender, subject_age, glasses_mac, username, start_time, duration,
+        frequency, light_brightness, sound_volume, sync_brightness, sync_volume
     </sql>
 
     <insert id="insertTimeData" parameterType="cn.bupt.ibrain_glasses.glasses.model.TimeData">
         insert into time_data (subject_phone, subject_name, subject_gender, subject_age,
-                               glasses_mac, username, start_time, duration)
+                               glasses_mac, username, start_time, duration, frequency,
+                               light_brightness, sound_volume, sync_brightness, sync_volume)
         values (#{timeData.subjectPhone}, #{timeData.subjectName},
                 #{timeData.subjectGender}, #{timeData.subjectAge},
                 #{timeData.glassesMac}, #{timeData.username},
-                #{timeData.startTime}, #{timeData.duration})
+                #{timeData.startTime}, #{timeData.duration},
+                #{timeData.frequency}, #{timeData.lightBrightness},
+                #{timeData.soundVolume}, #{timeData.syncBrightness},
+                #{timeData.syncVolume})
     </insert>
 </mapper>
