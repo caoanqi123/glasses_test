@@ -356,6 +356,11 @@ public class TimeDataController {
                 "subjectGender", "subjectAge", "frequency", "light_brightness",
                 "sound_volume", "sync_brightness", "sync_volume"
         };
+        for (int i = 0; i < headers.length; i++) {
+            if ("soound_volume".equals(headers[i])) {
+                headers[i] = "sound_volume";
+            }
+        }
         int[] maxWidths = new int[headers.length];
         for (int i = 0; i < headers.length; i++) {
             Cell cell = header.createCell(i);
