@@ -124,9 +124,9 @@ function TimeDataPage({ currentUser }) {
             subjectGender: newSubjectGender,
             subjectAge: newSubjectAge,
         };
-        const { subjectPhone, glassesMac } = editingRecord.timeDataPK;
+        const { subjectPhone, glassesMac, startTime } = editingRecord.timeDataPK;
         try {
-            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}`, {
+            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?startTime=${encodeURIComponent(startTime)}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -137,7 +137,11 @@ function TimeDataPage({ currentUser }) {
             } else {
                 // 更新本地列表数据
                 setTimeDataList(prevList => prevList.map(item => {
-                    if (item.timeDataPK.subjectPhone === subjectPhone && item.timeDataPK.glassesMac === glassesMac) {
+                    if (
+                        item.timeDataPK.subjectPhone === subjectPhone
+                        && item.timeDataPK.glassesMac === glassesMac
+                        && item.timeDataPK.startTime === startTime
+                    ) {
                         return {
                             ...item,
                             username: newAccount,
@@ -161,9 +165,9 @@ function TimeDataPage({ currentUser }) {
 
     // 删除记录
     const deleteRecord = async (record) => {
-        const { subjectPhone, glassesMac } = record.timeDataPK;
+        const { subjectPhone, glassesMac, startTime } = record.timeDataPK;
         try {
-            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?username=${currentUser.username}`, {
+            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?startTime=${encodeURIComponent(startTime)}&username=${currentUser.username}`, {
                 method: 'DELETE',
             });
             const data = await res.json();
@@ -171,7 +175,11 @@ function TimeDataPage({ currentUser }) {
                 message.error(data.message || "删除失败");
             } else {
                 setTimeDataList(prevList => prevList.filter(item =>
-                    !(item.timeDataPK.subjectPhone === subjectPhone && item.timeDataPK.glassesMac === glassesMac)
+                    !(
+                        item.timeDataPK.subjectPhone === subjectPhone
+                        && item.timeDataPK.glassesMac === glassesMac
+                        && item.timeDataPK.startTime === startTime
+                    )
                 ));
                 message.success("记录已删除");
             }
@@ -198,6 +206,7 @@ function TimeDataPage({ currentUser }) {
         const payload = selectedRows.map(row => ({
             subjectPhone: row.timeDataPK.subjectPhone,
             glassesMac: row.timeDataPK.glassesMac,
+            startTime: row.timeDataPK.startTime,
         }));
         try {
             const res = await fetch('/time-data/export', {
@@ -343,7 +352,7 @@ function TimeDataPage({ currentUser }) {
                     className="data-table"
                     columns={columns}
                     dataSource={filteredList}
-                    rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}`}
+                    rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}_${record.timeDataPK.startTime}`}
                     rowSelection={{
                         selectedRowKeys,
                         onChange: (keys, rows) => {

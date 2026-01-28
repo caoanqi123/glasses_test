@@ -59,7 +59,7 @@ public class TimeData implements Serializable {
     // 保持旧 JSON 结构：前端仍然可以用 timeDataPK.subjectPhone / glassesMac
     public TimeDataPK getTimeDataPK() {
         if (timeDataPK == null) {
-            timeDataPK = new TimeDataPK(subjectPhone, glassesMac);
+            timeDataPK = new TimeDataPK(subjectPhone, glassesMac, startTime);
         }
         return timeDataPK;
     }
@@ -69,6 +69,7 @@ public class TimeData implements Serializable {
         if (pk != null) {
             this.subjectPhone = pk.getSubjectPhone();
             this.glassesMac = pk.getGlassesMac();
+            this.startTime = pk.getStartTime();
         }
     }
 }

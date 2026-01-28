@@ -202,11 +202,17 @@ public class TimeDataController {
     @PutMapping("/{subjectPhone}/{glassesMac}")
     public ResponseEntity<ApiResponse> updateTimeData(@PathVariable String subjectPhone,
                                                       @PathVariable String glassesMac,
+                                                      @RequestParam String startTime,
                                                       @RequestBody UpdateTimeDataDto dto) {
+        LocalDateTime startKey = parseStartTime(startTime);
+        if (startKey == null) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "开始时间格式不正确");
+        }
         // 根据复合主键定位记录
         QueryWrapper<TimeData> query = new QueryWrapper<TimeData>()
                 .eq("subject_phone", subjectPhone)
-                .eq("glasses_mac", glassesMac);
+                .eq("glasses_mac", glassesMac)
+                .eq("start_time", startKey);
         TimeData record = timeDataService.getOne(query);
         if (record == null) {
             return ApiResponse.createResponse(HttpStatus.NOT_FOUND.value(), "记录不存在");
@@ -228,19 +234,8 @@ public class TimeDataController {
         }
         // 如提供新的开始时间，则校验格式并更新
         if (dto.getStartTime() != null) {
-            LocalDateTime newStart;
-            try {
-                String startStr = dto.getStartTime();
-                if (startStr.length() <= 16) {
-                    // 格式：yyyy-MM-dd'T'HH:mm
-                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-                    newStart = LocalDateTime.parse(startStr, fmt);
-                } else {
-                    // 格式：yyyy-MM-dd'T'HH:mm:ss
-                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-                    newStart = LocalDateTime.parse(startStr, fmt);
-                }
-            } catch (DateTimeParseException e) {
+            LocalDateTime newStart = parseStartTime(dto.getStartTime());
+            if (newStart == null) {
                 return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "开始时间格式不正确");
             }
             record.setStartTime(newStart);
@@ -274,15 +269,21 @@ public class TimeDataController {
     @DeleteMapping("/{subjectPhone}/{glassesMac}")
     public ResponseEntity<ApiResponse> deleteTimeData(@PathVariable String subjectPhone,
                                                       @PathVariable String glassesMac,
+                                                      @RequestParam String startTime,
                                                       @RequestParam String username) {
         User currentUser = userService.getById(username);
         if (currentUser == null) {
             return ApiResponse.createResponse(HttpStatus.UNAUTHORIZED.value(), "未授权的访问");
         }
+        LocalDateTime startKey = parseStartTime(startTime);
+        if (startKey == null) {
+            return ApiResponse.createResponse(HttpStatus.BAD_REQUEST.value(), "开始时间格式不正确");
+        }
         // 查找要删除的记录
         QueryWrapper<TimeData> query = new QueryWrapper<TimeData>()
                 .eq("subject_phone", subjectPhone)
-                .eq("glasses_mac", glassesMac);
+                .eq("glasses_mac", glassesMac)
+                .eq("start_time", startKey);
         TimeData record = timeDataService.getOne(query);
         if (record == null) {
             return ApiResponse.createResponse(HttpStatus.NOT_FOUND.value(), "记录未找到或已删除");
@@ -312,17 +313,23 @@ public class TimeDataController {
         QueryWrapper<TimeData> query = new QueryWrapper<>();
         boolean hasValid = false;
         for (TimeDataKey key : keys) {
-            if (key == null || key.getSubjectPhone() == null || key.getGlassesMac() == null) {
+            if (key == null || key.getSubjectPhone() == null || key.getGlassesMac() == null || key.getStartTime() == null) {
+                continue;
+            }
+            LocalDateTime startKey = parseStartTime(key.getStartTime());
+            if (startKey == null) {
                 continue;
             }
             if (!hasValid) {
                 query.eq("subject_phone", key.getSubjectPhone())
-                        .eq("glasses_mac", key.getGlassesMac());
+                        .eq("glasses_mac", key.getGlassesMac())
+                        .eq("start_time", startKey);
                 hasValid = true;
             } else {
                 query.or()
                         .eq("subject_phone", key.getSubjectPhone())
-                        .eq("glasses_mac", key.getGlassesMac());
+                        .eq("glasses_mac", key.getGlassesMac())
+                        .eq("start_time", startKey);
             }
         }
         if (!hasValid) {
@@ -344,9 +351,9 @@ public class TimeDataController {
         int rowIndex = 0;
         Row header = sheet.createRow(rowIndex++);
         String[] headers = {
-                "被试手机号", "MAC", "被试姓名", "被试性别", "被试年龄",
-                "开始时间", "持续时间", "频率", "光训练亮度", "声训练大小",
-                "同步训练亮度", "同步训练大小"
+                "subjectPhone", "MAC", "startTime", "duration", "subjectName",
+                "subjectGender", "subjectAge", "frequency", "light_brightness",
+                "soound_volume", "sync_brightness", "sync_volume"
         };
         int[] maxWidths = new int[headers.length];
         for (int i = 0; i < headers.length; i++) {
@@ -355,25 +362,17 @@ public class TimeDataController {
             cell.setCellStyle(headerStyle);
             maxWidths[i] = headers[i].length();
         }
-        Map<Integer, Integer> minHeaderWidths = new HashMap<>();
-        minHeaderWidths.put(2, 12);  // 被试姓名
-        minHeaderWidths.put(3, 12);  // 被试性别
-        minHeaderWidths.put(4, 12);  // 被试年龄
-        minHeaderWidths.put(8, 14);  // 光训练亮度
-        minHeaderWidths.put(9, 14);  // 声训练大小
-        minHeaderWidths.put(10, 16); // 同步训练亮度
-        minHeaderWidths.put(11, 16); // 同步训练大小
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (TimeData record : records) {
             Row row = sheet.createRow(rowIndex++);
             String[] values = {
                     defaultString(record.getSubjectPhone()),
                     defaultString(record.getGlassesMac()),
+                    record.getStartTime() == null ? "" : record.getStartTime().format(fmt),
+                    formatDuration(record.getDuration()),
                     defaultString(record.getSubjectName()),
                     defaultString(record.getSubjectGender()),
                     record.getSubjectAge() == null ? "" : String.valueOf(record.getSubjectAge()),
-                    record.getStartTime() == null ? "" : record.getStartTime().format(fmt),
-                    formatDuration(record.getDuration()),
                     record.getFrequency() == null ? "" : String.valueOf(record.getFrequency()),
                     record.getLightBrightness() == null ? "" : String.valueOf(record.getLightBrightness()),
                     record.getSoundVolume() == null ? "" : String.valueOf(record.getSoundVolume()),
@@ -390,8 +389,7 @@ public class TimeDataController {
             }
         }
         for (int i = 0; i < headers.length; i++) {
-            int minWidth = minHeaderWidths.getOrDefault(i, maxWidths[i]);
-            int width = Math.min(255, Math.max(maxWidths[i], minWidth) + 6);
+            int width = Math.min(255, maxWidths[i] + 8);
             sheet.setColumnWidth(i, width * 256);
         }
 
@@ -454,10 +452,13 @@ public class TimeDataController {
     static class TimeDataKey {
         private String subjectPhone;
         private String glassesMac;
+        private String startTime;
         public String getSubjectPhone() { return subjectPhone; }
         public void setSubjectPhone(String subjectPhone) { this.subjectPhone = subjectPhone; }
         public String getGlassesMac() { return glassesMac; }
         public void setGlassesMac(String glassesMac) { this.glassesMac = glassesMac; }
+        public String getStartTime() { return startTime; }
+        public void setStartTime(String startTime) { this.startTime = startTime; }
     }
 
     private boolean isValidGender(String gender) {
@@ -475,5 +476,25 @@ public class TimeDataController {
 
     private static String defaultString(String value) {
         return value == null ? "" : value;
+    }
+
+    private LocalDateTime parseStartTime(String startStr) {
+        if (startStr == null || startStr.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            if (startStr.length() <= 16) {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                return LocalDateTime.parse(startStr, fmt);
+            }
+            if (startStr.length() <= 19 && !startStr.contains("T")) {
+                DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                return LocalDateTime.parse(startStr, fmt);
+            }
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            return LocalDateTime.parse(startStr, fmt);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 }

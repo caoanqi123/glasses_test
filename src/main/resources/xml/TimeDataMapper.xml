@@ -5,11 +5,11 @@
     <resultMap id="BaseResultMap" type="cn.bupt.ibrain_glasses.glasses.model.TimeData">
         <id property="subjectPhone" column="subject_phone" jdbcType="CHAR"/>
         <id property="glassesMac" column="glasses_mac" jdbcType="CHAR"/>
+        <id property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="subjectName" column="subject_name" jdbcType="VARCHAR"/>
         <result property="subjectGender" column="subject_gender" jdbcType="VARCHAR"/>
         <result property="subjectAge" column="subject_age" jdbcType="INTEGER"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
-        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="duration" column="duration" jdbcType="INTEGER"/>
         <result property="frequency" column="frequency" jdbcType="INTEGER"/>
         <result property="lightBrightness" column="light_brightness" jdbcType="INTEGER"/>
