@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 import { Layout, Menu, Button, Avatar, Dropdown } from 'antd';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import {
     UserOutlined,
     DatabaseOutlined,
@@ -12,53 +13,14 @@ import LoginPage from './pages/LoginPage';
 import TimeDataPage from './pages/TimeDataPage';
 import OrgManagementPage from './pages/OrgManagementPage';
 import UserManagementPage from './pages/UserManagementPage';
+import { clearStoredUser, readStoredUser, storeUser } from './utils/authStorage';
 
 const { Sider, Content, Header } = Layout;
 
-function App() {
-    // 当前登录用户信息（null 表示未登录）
-    const [currentUser, setCurrentUser] = useState(null);
-    // 当前显示的页面标识: 'timeData' | 'orgManage' | 'userManage'
+function HomeLayout({ currentUser, onLogout }) {
     const [currentPage, setCurrentPage] = useState('timeData');
     const [collapsed, setCollapsed] = useState(false);
 
-    // 组件挂载时尝试从 localStorage 恢复登录状态
-    useEffect(() => {
-        const savedUsername = localStorage.getItem('username');
-        const savedName = localStorage.getItem('name');
-        const savedAuth = localStorage.getItem('authorityType');
-        const savedOrgId = localStorage.getItem('organizationId');
-        if (savedUsername && savedAuth) {
-            setCurrentUser({
-                username: savedUsername,
-                name: savedName,
-                authorityType: savedAuth,
-                organizationId: savedOrgId || '',
-            });
-        }
-    }, []);
-
-    // 退出登录
-    const handleLogout = () => {
-        localStorage.removeItem('username');
-        localStorage.removeItem('name');
-        localStorage.removeItem('authorityType');
-        localStorage.removeItem('organizationId');
-        setCurrentUser(null);
-        setCurrentPage('timeData');
-    };
-
-    // 未登录时渲染登录页
-    if (!currentUser) {
-        return (
-            <LoginPage onLoginSuccess={(user) => {
-                setCurrentUser(user);
-                setCurrentPage('timeData');
-            }} />
-        );
-    }
-
-    // 根据当前用户权限控制菜单项显示
     const { name } = currentUser;
     const menuItems = [
         { key: 'timeData', icon: <DatabaseOutlined />, label: '时间数据' },
@@ -77,14 +39,13 @@ function App() {
             {
                 key: 'logout',
                 label: '退出登录',
-                onClick: handleLogout,
+                onClick: onLogout,
             },
         ],
     };
 
     return (
         <Layout className="app-layout">
-            {/* 左侧侧边栏菜单 */}
             <Sider width={220} collapsedWidth={72} collapsed={collapsed} className="app-sider">
                 <div className="app-logo">
                     <DatabaseOutlined />
@@ -105,7 +66,6 @@ function App() {
                     />
                 </div>
             </Sider>
-            {/* 右侧主内容区 */}
             <Layout className="app-main">
                 <Header className="app-header">
                     <div className="header-title">{pageTitleMap[currentPage]}</div>
@@ -125,6 +85,46 @@ function App() {
                 </Content>
             </Layout>
         </Layout>
+    );
+}
+
+function App() {
+    const navigate = useNavigate();
+    const [currentUser, setCurrentUser] = useState(() => readStoredUser());
+
+    const handleLoginSuccess = (user) => {
+        storeUser(user);
+        setCurrentUser(user);
+        navigate('/home', { replace: true });
+    };
+
+    const handleLogout = () => {
+        clearStoredUser();
+        setCurrentUser(null);
+        navigate('/login', { replace: true });
+    };
+
+    return (
+        <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route
+                path="/login"
+                element={
+                    currentUser
+                        ? <Navigate to="/home" replace />
+                        : <LoginPage onLoginSuccess={handleLoginSuccess} />
+                }
+            />
+            <Route
+                path="/home"
+                element={
+                    currentUser
+                        ? <HomeLayout currentUser={currentUser} onLogout={handleLogout} />
+                        : <Navigate to="/login" replace />
+                }
+            />
+            <Route path="*" element={<Navigate to="/home" replace />} />
+        </Routes>
     );
 }
 

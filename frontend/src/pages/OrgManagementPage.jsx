@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Table, message, Card, Button, Modal, Input, Popconfirm, Space, Form } from 'antd';
+import { organizationApi } from '../api';
+import { getErrorMessage } from '../api/request';
 
 function OrgManagementPage({ currentUser }) {
     const [orgList, setOrgList] = useState([]);
@@ -12,18 +14,17 @@ function OrgManagementPage({ currentUser }) {
     useEffect(() => {
         const fetchOrgs = async () => {
             try {
-                const res = await fetch('/organizations');
-                const data = await res.json();
+                const data = await organizationApi.list();
                 if (!data.success) {
-                    message.error(data.message || "无法获取组织列表");
-                } else {
-                    setOrgList(data.data);
+                    message.error(data.message || '无法获取组织列表');
+                    return;
                 }
-            } catch (err) {
-                console.error("Failed to fetch organizations:", err);
-                message.error("获取组织列表失败");
+                setOrgList(data.data);
+            } catch (error) {
+                message.error(getErrorMessage(error, '获取组织列表失败'));
             }
         };
+
         fetchOrgs();
     }, []);
 
@@ -39,7 +40,7 @@ function OrgManagementPage({ currentUser }) {
 
     const startEditOrg = (org) => {
         if (!canManageOrg(org)) {
-            message.warning("无权限修改该组织");
+            message.warning('无权限修改该组织');
             return;
         }
         setEditingOrg(org);
@@ -53,52 +54,51 @@ function OrgManagementPage({ currentUser }) {
 
     const submitOrgEdit = async () => {
         if (!newOrgName.trim()) {
-            message.error("组织名称不能为空");
+            message.error('组织名称不能为空');
             return;
         }
+
         try {
-            const res = await fetch(`/organizations/${encodeURIComponent(editingOrg.organizationId)}?currentUsername=${currentUser.username}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ organizationName: newOrgName.trim() }),
-            });
-            const data = await res.json();
+            const data = await organizationApi.update(
+                editingOrg.organizationId,
+                currentUser.username,
+                { organizationName: newOrgName.trim() },
+            );
+
             if (!data.success) {
-                message.error(data.message || "修改失败");
-            } else {
-                setOrgList(prev => prev.map(org => (
-                    org.organizationId === editingOrg.organizationId
-                        ? { ...org, organizationName: newOrgName.trim() }
-                        : org
-                )));
-                message.success("组织信息已更新");
-                cancelEditOrg();
+                message.error(data.message || '修改失败');
+                return;
             }
-        } catch (err) {
-            console.error("Update organization failed:", err);
-            message.error("修改请求失败");
+
+            setOrgList((prev) => prev.map((org) => (
+                org.organizationId === editingOrg.organizationId
+                    ? { ...org, organizationName: newOrgName.trim() }
+                    : org
+            )));
+            message.success('组织信息已更新');
+            cancelEditOrg();
+        } catch (error) {
+            message.error(getErrorMessage(error, '修改请求失败'));
         }
     };
 
     const deleteOrg = async (org) => {
         if (!canManageOrg(org)) {
-            message.warning("无权限删除该组织");
+            message.warning('无权限删除该组织');
             return;
         }
+
         try {
-            const res = await fetch(`/organizations/${encodeURIComponent(org.organizationId)}?currentUsername=${currentUser.username}`, {
-                method: 'DELETE',
-            });
-            const data = await res.json();
+            const data = await organizationApi.remove(org.organizationId, currentUser.username);
             if (!data.success) {
-                message.error(data.message || "删除失败");
-            } else {
-                setOrgList(prev => prev.filter(item => item.organizationId !== org.organizationId));
-                message.success("组织已删除");
+                message.error(data.message || '删除失败');
+                return;
             }
-        } catch (err) {
-            console.error("Delete organization failed:", err);
-            message.error("删除请求失败");
+
+            setOrgList((prev) => prev.filter((item) => item.organizationId !== org.organizationId));
+            message.success('组织已删除');
+        } catch (error) {
+            message.error(getErrorMessage(error, '删除请求失败'));
         }
     };
 
@@ -112,38 +112,32 @@ function OrgManagementPage({ currentUser }) {
 
     const submitCreateOrg = async () => {
         if (!createOrgId.trim()) {
-            message.error("组织ID不能为空");
+            message.error('组织ID不能为空');
             return;
         }
         if (!createOrgName.trim()) {
-            message.error("组织名称不能为空");
+            message.error('组织名称不能为空');
             return;
         }
+
         try {
-            const res = await fetch(`/organizations?currentUsername=${currentUser.username}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    organizationId: createOrgId.trim(),
-                    organizationName: createOrgName.trim(),
-                }),
-            });
-            const data = await res.json();
+            const payload = {
+                organizationId: createOrgId.trim(),
+                organizationName: createOrgName.trim(),
+            };
+            const data = await organizationApi.create(currentUser.username, payload);
             if (!data.success) {
-                message.error(data.message || "新增失败");
-            } else {
-                setOrgList(prev => [
-                    ...prev,
-                    { organizationId: createOrgId.trim(), organizationName: createOrgName.trim() },
-                ]);
-                message.success("组织已新增");
-                setCreateOrgId('');
-                setCreateOrgName('');
-                setIsCreateOpen(false);
+                message.error(data.message || '新增失败');
+                return;
             }
-        } catch (err) {
-            console.error("Create organization failed:", err);
-            message.error("新增请求失败");
+
+            setOrgList((prev) => [...prev, payload]);
+            message.success('组织已新增');
+            setCreateOrgId('');
+            setCreateOrgName('');
+            setIsCreateOpen(false);
+        } catch (error) {
+            message.error(getErrorMessage(error, '新增请求失败'));
         }
     };
 
@@ -171,7 +165,7 @@ function OrgManagementPage({ currentUser }) {
                         </Button>
                     </Popconfirm>
                 </Space>
-            )
+            ),
         },
     ];
 

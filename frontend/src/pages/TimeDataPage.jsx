@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
     Table,
     Button,
@@ -16,44 +16,43 @@ import {
     Select,
 } from 'antd';
 import dayjs from 'dayjs';
+import { timeDataApi } from '../api';
+import { getErrorMessage } from '../api/request';
 
 function TimeDataPage({ currentUser }) {
-    const [timeDataList, setTimeDataList] = useState([]);   // 时间数据完整列表
-    const [filterPhone, setFilterPhone] = useState('');     // 筛选：手机号
-    const [filterMac, setFilterMac] = useState('');         // 筛选：MAC地址
-    const [filterStart, setFilterStart] = useState('');     // 筛选：开始时间字符串（日期模糊）
-    const [filterStartDate, setFilterStartDate] = useState(null); // 筛选：开始时间选择器值
-    const [editingRecord, setEditingRecord] = useState(null);  // 当前正在编辑的记录
-    const [newAccount, setNewAccount] = useState('');          // 编辑表单：新的记录者账号
-    const [newStartTime, setNewStartTime] = useState(null);    // 编辑表单：新的开始时间 (dayjs 对象)
-    const [newDuration, setNewDuration] = useState(null);      // 编辑表单：新的持续时间 (秒)
+    const [timeDataList, setTimeDataList] = useState([]);
+    const [filterPhone, setFilterPhone] = useState('');
+    const [filterMac, setFilterMac] = useState('');
+    const [filterStart, setFilterStart] = useState('');
+    const [filterStartDate, setFilterStartDate] = useState(null);
+    const [editingRecord, setEditingRecord] = useState(null);
+    const [newAccount, setNewAccount] = useState('');
+    const [newStartTime, setNewStartTime] = useState(null);
+    const [newDuration, setNewDuration] = useState(null);
     const [newSubjectName, setNewSubjectName] = useState('');
     const [newSubjectGender, setNewSubjectGender] = useState('');
     const [newSubjectAge, setNewSubjectAge] = useState(null);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
 
-    // 初始化加载当前用户可查看的 timeData 列表
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch(`/time-data?username=${currentUser.username}`);
-                const data = await res.json();
+                const data = await timeDataApi.list(currentUser.username);
                 if (!data.success) {
-                    message.error(data.message || "无法获取时间数据");
-                } else {
-                    setTimeDataList(data.data);
+                    message.error(data.message || '无法获取时间数据');
+                    return;
                 }
-            } catch (err) {
-                console.error("Failed to fetch time data:", err);
-                message.error("获取时间数据失败");
+                setTimeDataList(data.data);
+            } catch (error) {
+                message.error(getErrorMessage(error, '获取时间数据失败'));
             }
         };
+
         fetchData();
     }, [currentUser.username]);
 
-    // 根据筛选字段对列表进行过滤
-    const filteredList = timeDataList.filter(item => {
+    const filteredList = timeDataList.filter((item) => {
         const phoneMatch = item.timeDataPK.subjectPhone.includes(filterPhone);
         const macMatch = item.timeDataPK.glassesMac.includes(filterMac);
         const startStr = item.startTime ? String(item.startTime).replace('T', ' ') : '';
@@ -61,23 +60,22 @@ function TimeDataPage({ currentUser }) {
         return phoneMatch && macMatch && startMatch;
     });
 
-    // 点击“修改”按钮，打开编辑弹窗并初始化表单字段
     const startEdit = (record) => {
         setEditingRecord(record);
         setNewAccount(record.username);
         setNewSubjectName(record.subjectName || '');
         setNewSubjectGender(record.subjectGender || '');
         setNewSubjectAge(record.subjectAge ?? null);
-        // 将开始时间字符串转换为 dayjs 对象作为初始值
+
         if (record.startTime) {
             setNewStartTime(dayjs(String(record.startTime).replace('T', ' ')));
         } else {
             setNewStartTime(null);
         }
+
         setNewDuration(record.duration);
     };
 
-    // 取消编辑
     const cancelEdit = () => {
         setEditingRecord(null);
         setNewAccount('');
@@ -88,104 +86,94 @@ function TimeDataPage({ currentUser }) {
         setNewSubjectAge(null);
     };
 
-    // 提交修改
     const submitEdit = async () => {
-        // 前端校验输入
         if (!/^\d{11}$/.test(newAccount)) {
-            message.error("账号必须为11位数字");
+            message.error('账号必须为11位数字');
             return;
         }
         if (!newSubjectName.trim()) {
-            message.error("被试姓名不能为空");
+            message.error('被试姓名不能为空');
             return;
         }
         if (newSubjectGender !== '男' && newSubjectGender !== '女') {
-            message.error("被试性别必须为男或女");
+            message.error('被试性别必须为男或女');
             return;
         }
         if (!Number.isInteger(newSubjectAge) || newSubjectAge <= 0) {
-            message.error("被试年龄必须为正整数");
+            message.error('被试年龄必须为正整数');
             return;
         }
         if (!Number.isInteger(newDuration) || newDuration <= 0) {
-            message.error("持续时间必须是正整数");
+            message.error('持续时间必须是正整数');
             return;
         }
         if (!newStartTime) {
-            message.error("请选择开始时间");
+            message.error('请选择开始时间');
             return;
         }
-        // 准备请求体数据
+
         const payload = {
             username: newAccount,
-            startTime: newStartTime.format("YYYY-MM-DDTHH:mm:ss"),
+            startTime: newStartTime.format('YYYY-MM-DDTHH:mm:ss'),
             duration: newDuration,
             subjectName: newSubjectName.trim(),
             subjectGender: newSubjectGender,
             subjectAge: newSubjectAge,
         };
+
         const { subjectPhone, glassesMac, startTime } = editingRecord.timeDataPK;
+
         try {
-            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?startTime=${encodeURIComponent(startTime)}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            const data = await res.json();
+            const data = await timeDataApi.update(subjectPhone, glassesMac, startTime, payload);
             if (!data.success) {
-                message.error(data.message || "修改失败");
-            } else {
-                // 更新本地列表数据
-                setTimeDataList(prevList => prevList.map(item => {
-                    if (
-                        item.timeDataPK.subjectPhone === subjectPhone
-                        && item.timeDataPK.glassesMac === glassesMac
-                        && item.timeDataPK.startTime === startTime
-                    ) {
-                        return {
-                            ...item,
-                            username: newAccount,
-                            startTime: newStartTime.format("YYYY-MM-DDTHH:mm:ss"),
-                            duration: newDuration,
-                            subjectName: newSubjectName.trim(),
-                            subjectGender: newSubjectGender,
-                            subjectAge: newSubjectAge,
-                        };
-                    }
-                    return item;
-                }));
-                message.success("记录已更新");
-                cancelEdit();
+                message.error(data.message || '修改失败');
+                return;
             }
-        } catch (err) {
-            console.error("Update failed:", err);
-            message.error("修改请求失败");
+
+            setTimeDataList((prevList) => prevList.map((item) => {
+                if (
+                    item.timeDataPK.subjectPhone === subjectPhone
+                    && item.timeDataPK.glassesMac === glassesMac
+                    && item.timeDataPK.startTime === startTime
+                ) {
+                    return {
+                        ...item,
+                        username: newAccount,
+                        startTime: newStartTime.format('YYYY-MM-DDTHH:mm:ss'),
+                        duration: newDuration,
+                        subjectName: newSubjectName.trim(),
+                        subjectGender: newSubjectGender,
+                        subjectAge: newSubjectAge,
+                    };
+                }
+                return item;
+            }));
+
+            message.success('记录已更新');
+            cancelEdit();
+        } catch (error) {
+            message.error(getErrorMessage(error, '修改请求失败'));
         }
     };
 
-    // 删除记录
     const deleteRecord = async (record) => {
         const { subjectPhone, glassesMac, startTime } = record.timeDataPK;
+
         try {
-            const res = await fetch(`/time-data/${encodeURIComponent(subjectPhone)}/${encodeURIComponent(glassesMac)}?startTime=${encodeURIComponent(startTime)}&username=${currentUser.username}`, {
-                method: 'DELETE',
-            });
-            const data = await res.json();
+            const data = await timeDataApi.remove(subjectPhone, glassesMac, startTime, currentUser.username);
             if (!data.success) {
-                message.error(data.message || "删除失败");
-            } else {
-                setTimeDataList(prevList => prevList.filter(item =>
-                    !(
-                        item.timeDataPK.subjectPhone === subjectPhone
-                        && item.timeDataPK.glassesMac === glassesMac
-                        && item.timeDataPK.startTime === startTime
-                    )
-                ));
-                message.success("记录已删除");
+                message.error(data.message || '删除失败');
+                return;
             }
-        } catch (err) {
-            console.error("Delete failed:", err);
-            message.error("删除请求失败");
+
+            setTimeDataList((prevList) => prevList.filter((item) => !(
+                item.timeDataPK.subjectPhone === subjectPhone
+                && item.timeDataPK.glassesMac === glassesMac
+                && item.timeDataPK.startTime === startTime
+            )));
+            message.success('记录已删除');
+        } catch (error) {
+            message.error(getErrorMessage(error, '删除请求失败'));
         }
     };
 
@@ -200,51 +188,45 @@ function TimeDataPage({ currentUser }) {
 
     const handleExport = async () => {
         if (selectedRows.length === 0) {
-            message.warning("请先选择要导出的记录");
+            message.warning('请先选择要导出的记录');
             return;
         }
-        const payload = selectedRows.map(row => ({
+
+        const payload = selectedRows.map((row) => ({
             subjectPhone: row.timeDataPK.subjectPhone,
             glassesMac: row.timeDataPK.glassesMac,
             startTime: row.timeDataPK.startTime,
         }));
+
         try {
-            const res = await fetch('/time-data/export', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) {
-                message.error("导出失败");
-                return;
-            }
-            const blob = await res.blob();
+            const { data: blob, response } = await timeDataApi.exportSelection(payload);
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
-            const disposition = res.headers.get('Content-Disposition');
+            const disposition = response.headers.get('Content-Disposition');
             let filename = 'time_data.xlsx';
+
             if (disposition) {
                 const match = disposition.match(/filename="([^"]+)"/);
                 if (match && match[1]) {
                     filename = match[1];
                 }
             }
+
             link.href = url;
             link.download = filename;
             document.body.appendChild(link);
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
-            message.success("导出成功");
+
+            message.success('导出成功');
             setSelectedRowKeys([]);
             setSelectedRows([]);
-        } catch (err) {
-            console.error("Export failed:", err);
-            message.error("导出请求失败");
+        } catch (error) {
+            message.error(getErrorMessage(error, '导出请求失败'));
         }
     };
 
-    // 表格列定义
     const columns = [
         { title: '姓名', dataIndex: 'subjectName', key: 'subjectName', width: 100, align: 'center', ellipsis: true },
         { title: '性别', dataIndex: 'subjectGender', key: 'subjectGender', width: 80, align: 'center' },
@@ -303,7 +285,7 @@ function TimeDataPage({ currentUser }) {
                                 <Input
                                     placeholder="请输入被试手机号"
                                     value={filterPhone}
-                                    onChange={e => setFilterPhone(e.target.value)}
+                                    onChange={(e) => setFilterPhone(e.target.value)}
                                     allowClear
                                 />
                             </Form.Item>
@@ -313,7 +295,7 @@ function TimeDataPage({ currentUser }) {
                                 <Input
                                     placeholder="请输入 MAC"
                                     value={filterMac}
-                                    onChange={e => setFilterMac(e.target.value)}
+                                    onChange={(e) => setFilterMac(e.target.value)}
                                     allowClear
                                 />
                             </Form.Item>
@@ -328,7 +310,7 @@ function TimeDataPage({ currentUser }) {
                                     style={{ width: '100%' }}
                                     onChange={(value) => {
                                         if (value) {
-                                            const str = value.format("YYYY-MM-DD");
+                                            const str = value.format('YYYY-MM-DD');
                                             setFilterStart(str);
                                             setFilterStartDate(value);
                                         } else {
@@ -352,7 +334,7 @@ function TimeDataPage({ currentUser }) {
                     className="data-table"
                     columns={columns}
                     dataSource={filteredList}
-                    rowKey={record => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}_${record.timeDataPK.startTime}`}
+                    rowKey={(record) => `${record.timeDataPK.subjectPhone}_${record.timeDataPK.glassesMac}_${record.timeDataPK.startTime}`}
                     rowSelection={{
                         selectedRowKeys,
                         onChange: (keys, rows) => {
@@ -365,7 +347,6 @@ function TimeDataPage({ currentUser }) {
                     pagination={{ pageSize: 8, showSizeChanger: false }}
                 />
             </Card>
-            {/* 编辑记录弹窗 */}
             {editingRecord && (
                 <Modal
                     title={null}
@@ -385,7 +366,7 @@ function TimeDataPage({ currentUser }) {
                         <Form.Item label="被试姓名">
                             <Input
                                 value={newSubjectName}
-                                onChange={e => setNewSubjectName(e.target.value)}
+                                onChange={(e) => setNewSubjectName(e.target.value)}
                                 placeholder="请输入被试姓名"
                                 maxLength={50}
                             />
@@ -393,7 +374,7 @@ function TimeDataPage({ currentUser }) {
                         <Form.Item label="被试性别">
                             <Select
                                 value={newSubjectGender}
-                                onChange={value => setNewSubjectGender(value)}
+                                onChange={(value) => setNewSubjectGender(value)}
                                 placeholder="请选择性别"
                             >
                                 <Select.Option value="男">男</Select.Option>
@@ -413,7 +394,7 @@ function TimeDataPage({ currentUser }) {
                         <Form.Item label="关联账号">
                             <Input
                                 value={newAccount}
-                                onChange={e => setNewAccount(e.target.value)}
+                                onChange={(e) => setNewAccount(e.target.value)}
                                 placeholder="11位账号"
                                 maxLength={11}
                             />
